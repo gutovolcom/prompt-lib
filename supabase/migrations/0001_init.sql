@@ -54,6 +54,14 @@ insert into public.categories (name, slug, color, sort_order) values
 -- =========================
 -- PROMPTS
 -- =========================
+-- Wrapper immutable para array_to_string: o Postgres marca array_to_string
+-- como stable, o que impede seu uso direto em coluna gerada (erro 42P17).
+-- Para text[] o resultado é determinístico, então o wrapper é seguro.
+create or replace function public.immutable_array_to_string(arr text[], sep text)
+returns text language sql immutable as $$
+  select array_to_string(arr, sep);
+$$;
+
 create table public.prompts (
   id uuid primary key default gen_random_uuid(),
   author_id uuid not null references public.profiles(id) on delete cascade,
@@ -70,7 +78,7 @@ create table public.prompts (
   fts tsvector generated always as (
     setweight(to_tsvector('portuguese', coalesce(title, '')), 'A') ||
     setweight(to_tsvector('portuguese', coalesce(prompt_text, '')), 'B') ||
-    setweight(to_tsvector('portuguese', coalesce(array_to_string(tags, ' '), '')), 'A')
+    setweight(to_tsvector('portuguese', coalesce(public.immutable_array_to_string(tags, ' '), '')), 'A')
   ) stored
 );
 
