@@ -1,8 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { LogOut, Plus, Search } from 'lucide-react'
+import { LogOut, Plus } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
+import { SearchBar } from './SearchBar'
 
 interface HeaderProps {
   onNewPrompt: () => void
@@ -28,21 +29,7 @@ export function Header({ onNewPrompt }: HeaderProps) {
           <span className="text-accent">GCO</span>
         </Link>
 
-        {/* Busca — habilitada na Fase 3 */}
-        <div className="relative flex-1">
-          <Search
-            size={16}
-            aria-hidden
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-          />
-          <input
-            type="search"
-            disabled
-            placeholder="Buscar prompts... (em breve)"
-            aria-label="Buscar prompts (em breve)"
-            className="w-full rounded-input border border-border bg-surface-2 py-2 pl-9 pr-3 text-sm text-text placeholder:text-text-muted disabled:cursor-not-allowed disabled:opacity-60"
-          />
-        </div>
+        <SearchBar />
 
         <div className="flex shrink-0 items-center gap-3">
           <Button type="button" onClick={onNewPrompt}>
