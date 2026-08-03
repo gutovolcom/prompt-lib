@@ -54,3 +54,13 @@ export interface Favorite {
   prompt_id: string
   created_at: string
 }
+
+// Shape retornado pelos selects com joins embutidos do supabase-js
+// (aliases: author, images, categories — ver src/hooks/usePrompts.ts).
+export interface PromptWithRelations extends Prompt {
+  author: Profile
+  images: PromptImage[]
+  categories: { category: Category }[]
+  /** Presente apenas no detalhe: contagem de favoritos via favorites(count). */
+  favorites?: { count: number }[]
+}
