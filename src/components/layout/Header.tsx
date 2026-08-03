@@ -4,7 +4,11 @@ import { useAuth } from '../../hooks/useAuth'
 import { Avatar } from '../ui/Avatar'
 import { Button } from '../ui/Button'
 
-export function Header() {
+interface HeaderProps {
+  onNewPrompt: () => void
+}
+
+export function Header({ onNewPrompt }: HeaderProps) {
   const { user, signOut } = useAuth()
   const navigate = useNavigate()
 
@@ -41,8 +45,7 @@ export function Header() {
         </div>
 
         <div className="flex shrink-0 items-center gap-3">
-          {/* Ação implementada na Fase 2 (modal de upload) */}
-          <Button type="button">
+          <Button type="button" onClick={onNewPrompt}>
             <Plus size={16} aria-hidden />
             Novo prompt
           </Button>
