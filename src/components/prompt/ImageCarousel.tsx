@@ -24,7 +24,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
   const many = images.length > 1
 
   return (
-    <div className="relative flex h-full min-h-[240px] items-center justify-center bg-black/40 md:min-h-[300px]">
+    <div className="relative flex h-full min-h-[240px] items-center justify-center bg-surface-2 md:min-h-[300px]">
       <img
         src={publicImageUrl(current.storage_path)}
         alt={title}
@@ -36,7 +36,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
             type="button"
             aria-label="Imagem anterior"
             onClick={() => setIndex((i) => (i - 1 + images.length) % images.length)}
-            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-pill bg-black/60 p-2 text-white transition duration-150 hover:bg-black/80"
+            className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-pill bg-surface/90 text-text shadow-md transition duration-150 hover:bg-surface"
           >
             <ChevronLeft size={18} aria-hidden />
           </button>
@@ -44,7 +44,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
             type="button"
             aria-label="Próxima imagem"
             onClick={() => setIndex((i) => (i + 1) % images.length)}
-            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-pill bg-black/60 p-2 text-white transition duration-150 hover:bg-black/80"
+            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-pill bg-surface/90 text-text shadow-md transition duration-150 hover:bg-surface"
           >
             <ChevronRight size={18} aria-hidden />
           </button>
@@ -56,7 +56,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
                 aria-label={`Ir para imagem ${i + 1}`}
                 onClick={() => setIndex(i)}
                 className={`h-1.5 w-1.5 rounded-pill transition duration-150 ${
-                  i === index ? 'bg-accent' : 'bg-white/40'
+                  i === index ? 'bg-text' : 'bg-text/30'
                 }`}
               />
             ))}
