@@ -15,20 +15,21 @@ export function SearchBar() {
   }, [value, patchFilters])
 
   return (
-    <div className="relative flex-1">
-      <Search
-        size={16}
-        aria-hidden
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-      />
+    <div className="relative mx-auto w-full max-w-xl flex-1">
       <input
         type="search"
         value={value}
         onChange={(event) => setValue(event.target.value)}
         placeholder="Buscar prompts..."
         aria-label="Buscar prompts"
-        className="w-full rounded-input border border-border bg-surface-2 py-2 pl-9 pr-3 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
+        className="w-full rounded-pill border border-transparent bg-surface-2 py-3 pl-5 pr-14 text-sm text-text placeholder:text-text-muted transition duration-150 focus:border-accent focus:bg-surface focus:outline-none"
       />
+      <span
+        className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-pill bg-accent text-white"
+        aria-hidden
+      >
+        <Search size={16} />
+      </span>
     </div>
   )
 }

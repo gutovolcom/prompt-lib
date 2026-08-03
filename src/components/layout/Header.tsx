@@ -28,9 +28,9 @@ export function Header({ onNewPrompt }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-surface">
-      <div className="mx-auto flex h-16 max-w-7xl items-center gap-3 px-4 sm:gap-6">
-        <Link to="/" className="shrink-0 text-base font-semibold sm:text-lg">
-          <span className="hidden sm:inline">
+      <div className="mx-auto flex h-20 max-w-[1440px] items-center gap-3 px-6 sm:gap-6">
+        <Link to="/" className="shrink-0 text-lg font-extrabold tracking-tight">
+          <span className="hidden text-text sm:inline">
             Prompt Lab <span className="text-text-muted">·</span>{' '}
           </span>
           <span className="text-accent">GCO</span>
