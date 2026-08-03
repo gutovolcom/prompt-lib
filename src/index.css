@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design system — seção 7 da SPEC_prompt_lab.md (tema escuro estilo Magnific) */
+:root {
+  --bg: #0e0e11; /* fundo geral */
+  --surface: #17171c; /* cards, header, modais */
+  --surface-2: #1f1f26; /* inputs, hover */
+  --border: #2a2a33;
+  --text: #f4f4f6;
+  --text-muted: #9b9ba6;
+  --accent: #dd303e; /* vermelho GCO — CTAs, pills ativas, coração favoritado */
+  --accent-2: #0d134c; /* navy GCO — detalhes secundários */
+}
+
+@layer base {
+  body {
+    @apply bg-bg text-text font-sans antialiased;
+  }
+
+  /* Acessibilidade: foco visível em todo elemento interativo */
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}
