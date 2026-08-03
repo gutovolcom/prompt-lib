@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
+import { ALLOWED_DOMAINS } from '../lib/config'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
 
@@ -92,7 +93,7 @@ export function Login() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="voce@grancursosonline.com.br"
+            placeholder={`voce@${ALLOWED_DOMAINS[0]}`}
           />
           <Input
             label="Senha"

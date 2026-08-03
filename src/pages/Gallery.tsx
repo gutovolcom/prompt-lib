@@ -6,6 +6,7 @@ import { usePromptsInfinite } from '../hooks/usePrompts'
 import { useFilters } from '../hooks/useFilters'
 import { FilterBar } from '../components/layout/FilterBar'
 import { PromptGrid } from '../components/gallery/PromptGrid'
+import { PromptGridSkeleton } from '../components/gallery/PromptGridSkeleton'
 import { Button } from '../components/ui/Button'
 
 interface GalleryProps {
@@ -96,9 +97,7 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
     <main className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4">
       <FilterBar hideFavoritesPill={favoritesOnly} />
 
-      {isLoading && (
-        <p className="py-12 text-center text-sm text-text-muted">Carregando prompts...</p>
-      )}
+      {isLoading && <PromptGridSkeleton />}
 
       {isError && (
         <p className="py-12 text-center text-sm text-text-muted">

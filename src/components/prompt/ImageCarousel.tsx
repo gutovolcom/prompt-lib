@@ -24,11 +24,11 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
   const many = images.length > 1
 
   return (
-    <div className="relative flex h-full min-h-[300px] items-center justify-center bg-black/40">
+    <div className="relative flex h-full min-h-[240px] items-center justify-center bg-black/40 md:min-h-[300px]">
       <img
         src={publicImageUrl(current.storage_path)}
         alt={title}
-        className="max-h-[80vh] w-full object-contain"
+        className="max-h-[50vh] w-full object-contain md:max-h-[80vh]"
       />
       {many && (
         <>
