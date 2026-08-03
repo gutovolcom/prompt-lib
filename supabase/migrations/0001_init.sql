@@ -199,7 +199,7 @@ create policy "update_own_profile" on public.profiles for update to authenticate
 -- create or replace function public.enforce_email_domain()
 -- returns trigger language plpgsql security definer as $$
 -- declare
---   allowed_domains text[] := array['grancursosonline.com.br'];
+--   allowed_domains text[] := array['gran.com'];
 -- begin
 --   if not (split_part(new.email, '@', 2) = any(allowed_domains)) then
 --     raise exception 'Cadastro permitido apenas para e-mails corporativos GCO.';
