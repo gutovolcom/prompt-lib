@@ -4,7 +4,10 @@ import { MODEL_OPTIONS } from '../../lib/config'
 import type { PromptWithRelations } from '../../lib/types'
 import { useCategories, useUpdatePrompt } from '../../hooks/usePrompts'
 import { Button } from '../ui/Button'
+import { Field } from '../ui/Field'
 import { Input } from '../ui/Input'
+import { Select } from '../ui/Select'
+import { Textarea } from '../ui/Textarea'
 
 interface EditPromptModalProps {
   prompt: PromptWithRelations
@@ -86,64 +89,51 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
       aria-modal="true"
       aria-label={`Editar ${prompt.title}`}
     >
-      <div className="absolute inset-0 bg-black/70" onClick={onClose} />
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card border border-border bg-surface">
+      <div className="absolute inset-0 animate-fade-in bg-[var(--overlay)]" onClick={onClose} />
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl animate-scale-in flex-col overflow-hidden rounded-card bg-surface shadow-lg">
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <h2 className="text-base font-semibold">Editar prompt</h2>
+          <h2 className="text-lg font-bold tracking-tight">Editar prompt</h2>
           <button
             type="button"
             aria-label="Fechar"
             onClick={onClose}
-            className="rounded-pill p-1.5 text-text-muted transition duration-150 hover:bg-surface-2 hover:text-text"
+            className="rounded-pill p-1.5 text-text-2 transition duration-150 hover:bg-surface-2 hover:text-text"
           >
             <X size={16} aria-hidden />
           </button>
         </div>
 
         <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
-          <p className="rounded-input border border-border bg-surface-2 px-3 py-2 text-xs text-text-muted">
+          <p className="rounded-input bg-surface-2 px-3 py-2 text-xs text-text-2">
             As imagens não podem ser alteradas na edição — para trocá-las, exclua o prompt e
             publique novamente.
           </p>
 
           <Input label="Título *" value={title} onChange={(e) => setTitle(e.target.value)} />
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="edit-prompt-text" className="text-sm font-medium text-text-muted">
-              Prompt *
-            </label>
-            <textarea
-              id="edit-prompt-text"
-              rows={6}
-              value={promptText}
-              onChange={(e) => setPromptText(e.target.value)}
-              className="rounded-input border border-border bg-surface-2 px-3 py-2 font-mono text-xs leading-relaxed text-text focus:border-accent focus:outline-none"
-            />
-          </div>
+          <Textarea
+            label="Prompt *"
+            rows={6}
+            value={promptText}
+            onChange={(e) => setPromptText(e.target.value)}
+            className="font-mono text-xs"
+          />
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="edit-negative" className="text-sm font-medium text-text-muted">
-              Negative prompt
-            </label>
-            <textarea
-              id="edit-negative"
-              rows={2}
-              value={negativePrompt}
-              onChange={(e) => setNegativePrompt(e.target.value)}
-              className="rounded-input border border-border bg-surface-2 px-3 py-2 font-mono text-xs text-text focus:border-accent focus:outline-none"
-            />
-          </div>
+          <Textarea
+            label="Negative prompt"
+            rows={2}
+            value={negativePrompt}
+            onChange={(e) => setNegativePrompt(e.target.value)}
+            className="font-mono text-xs"
+          />
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="edit-model" className="text-sm font-medium text-text-muted">
-              Modelo *
-            </label>
+          <Field label="Modelo *">
             <div className="flex gap-2">
-              <select
-                id="edit-model"
+              <Select
+                aria-label="Modelo"
                 value={modelChoice}
                 onChange={(e) => setModelChoice(e.target.value)}
-                className="flex-1 rounded-input border border-border bg-surface-2 px-3 py-2 text-sm text-text focus:border-accent focus:outline-none"
+                className="flex-1"
               >
                 {MODEL_OPTIONS.map((option) => (
                   <option key={option} value={option}>
@@ -151,21 +141,20 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
                   </option>
                 ))}
                 <option value={OTHER_MODEL}>Outro...</option>
-              </select>
+              </Select>
               {modelChoice === OTHER_MODEL && (
                 <input
                   aria-label="Nome do modelo"
                   value={customModel}
                   onChange={(e) => setCustomModel(e.target.value)}
                   placeholder="Nome do modelo"
-                  className="flex-1 rounded-input border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
+                  className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                 />
               )}
             </div>
-          </div>
+          </Field>
 
-          <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-text-muted">Categorias * (mín. 1)</span>
+          <Field label="Categorias * (mín. 1)">
             <div className="flex flex-wrap gap-1.5">
               {(categories ?? []).map((category) => {
                 const active = categoryIds.includes(category.id)
@@ -175,10 +164,8 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
                     type="button"
                     aria-pressed={active}
                     onClick={() => toggleCategory(category.id)}
-                    className={`rounded-pill border px-3 py-1 text-xs font-medium transition duration-150 ${
-                      active
-                        ? 'border-transparent text-white'
-                        : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                    className={`rounded-pill px-3 py-1.5 text-xs font-medium transition duration-150 ${
+                      active ? 'text-white' : 'bg-surface-2 text-text-2 hover:text-text'
                     }`}
                     style={active ? { backgroundColor: category.color } : undefined}
                   >
@@ -187,24 +174,21 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
                 )
               })}
             </div>
-          </div>
+          </Field>
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="edit-tags" className="text-sm font-medium text-text-muted">
-              Tags
-            </label>
-            <div className="flex flex-wrap items-center gap-1.5 rounded-input border border-border bg-surface-2 px-2 py-1.5">
+          <Field label="Tags">
+            <div className="flex flex-wrap items-center gap-1.5 rounded-pill bg-surface-2 px-3 py-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 rounded-pill bg-surface px-2 py-0.5 text-xs"
+                  className="inline-flex items-center gap-1 rounded-pill bg-surface px-2 py-0.5 text-xs shadow-sm"
                 >
                   #{tag}
                   <button
                     type="button"
                     aria-label={`Remover tag ${tag}`}
                     onClick={() => setTags((current) => current.filter((t) => t !== tag))}
-                    className="text-text-muted hover:text-text"
+                    className="text-text-2 hover:text-text"
                   >
                     <X size={11} aria-hidden />
                   </button>
@@ -225,55 +209,56 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
                 className="min-w-[120px] flex-1 bg-transparent px-1 py-0.5 text-sm text-text placeholder:text-text-muted focus:outline-none"
               />
             </div>
-          </div>
+          </Field>
 
-          <div className="flex flex-col gap-1.5">
-            <span className="text-sm font-medium text-text-muted">Parâmetros</span>
-            {paramRows.map((row, index) => (
-              <div key={index} className="flex gap-2">
-                <input
-                  aria-label="Nome do parâmetro"
-                  value={row.key}
-                  onChange={(e) =>
-                    setParamRows((current) =>
-                      current.map((r, i) => (i === index ? { ...r, key: e.target.value } : r)),
-                    )
-                  }
-                  placeholder="chave"
-                  className="w-1/3 rounded-input border border-border bg-surface-2 px-3 py-1.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
-                />
-                <input
-                  aria-label="Valor do parâmetro"
-                  value={row.value}
-                  onChange={(e) =>
-                    setParamRows((current) =>
-                      current.map((r, i) => (i === index ? { ...r, value: e.target.value } : r)),
-                    )
-                  }
-                  placeholder="valor"
-                  className="flex-1 rounded-input border border-border bg-surface-2 px-3 py-1.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
-                />
-                <button
-                  type="button"
-                  aria-label="Remover parâmetro"
-                  onClick={() => setParamRows((current) => current.filter((_, i) => i !== index))}
-                  className="rounded-input px-2 text-text-muted hover:text-text"
-                >
-                  <X size={14} aria-hidden />
-                </button>
-              </div>
-            ))}
-            <button
-              type="button"
-              onClick={() => setParamRows((current) => [...current, { key: '', value: '' }])}
-              className="self-start text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
-            >
-              + adicionar parâmetro
-            </button>
-          </div>
+          <Field label="Parâmetros">
+            <div className="flex flex-col gap-2">
+              {paramRows.map((row, index) => (
+                <div key={index} className="flex gap-2">
+                  <input
+                    aria-label="Nome do parâmetro"
+                    value={row.key}
+                    onChange={(e) =>
+                      setParamRows((current) =>
+                        current.map((r, i) => (i === index ? { ...r, key: e.target.value } : r)),
+                      )
+                    }
+                    placeholder="chave"
+                    className="w-1/3 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                  />
+                  <input
+                    aria-label="Valor do parâmetro"
+                    value={row.value}
+                    onChange={(e) =>
+                      setParamRows((current) =>
+                        current.map((r, i) => (i === index ? { ...r, value: e.target.value } : r)),
+                      )
+                    }
+                    placeholder="valor"
+                    className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                  />
+                  <button
+                    type="button"
+                    aria-label="Remover parâmetro"
+                    onClick={() => setParamRows((current) => current.filter((_, i) => i !== index))}
+                    className="rounded-pill px-2 text-text-2 hover:text-text"
+                  >
+                    <X size={14} aria-hidden />
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => setParamRows((current) => [...current, { key: '', value: '' }])}
+                className="self-start text-xs text-text-2 underline-offset-2 hover:text-text hover:underline"
+              >
+                + adicionar parâmetro
+              </button>
+            </div>
+          </Field>
 
           {formError && (
-            <p role="alert" className="text-sm text-accent">
+            <p role="alert" className="text-sm text-danger">
               {formError}
             </p>
           )}

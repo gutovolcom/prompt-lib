@@ -57,12 +57,14 @@ export function ImageDropzone({
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-card border-2 border-dashed px-6 py-10 text-center transition duration-150 ${
-          dragOver ? 'border-accent bg-surface-2' : 'border-border bg-surface-2/50 hover:bg-surface-2'
+          dragOver
+            ? 'border-accent bg-accent-soft'
+            : 'border-border bg-surface-2/50 hover:bg-surface-2'
         }`}
       >
-        <Upload size={28} aria-hidden className="text-text-muted" />
-        <p className="text-sm font-medium">Arraste imagens aqui ou clique para escolher</p>
-        <p className="text-xs text-text-muted">
+        <Upload size={28} aria-hidden className="text-text-2" />
+        <p className="text-sm font-medium text-text">Arraste imagens aqui ou clique para escolher</p>
+        <p className="text-xs text-text-2">
           PNG, JPG ou WebP · máx. {MAX_IMAGES} imagens · acima de 15MB são convertidas para WebP
           automaticamente
         </p>

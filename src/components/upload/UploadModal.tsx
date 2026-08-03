@@ -5,7 +5,10 @@ import { compressToWebp } from '../../lib/image'
 import { useCategories } from '../../hooks/usePrompts'
 import { useUpload, type NewPromptData } from '../../hooks/useUpload'
 import { Button } from '../ui/Button'
+import { Field } from '../ui/Field'
 import { Input } from '../ui/Input'
+import { Select } from '../ui/Select'
+import { Textarea } from '../ui/Textarea'
 import { useToast } from '../ui/Toast'
 import {
   ACCEPTED_TYPES,
@@ -214,14 +217,19 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
   const step1Valid = images.length > 0
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Novo prompt">
-      <div className="absolute inset-0 bg-black/70" onClick={handleClose} />
+    <div
+      className="fixed inset-0 z-40 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Novo prompt"
+    >
+      <div className="absolute inset-0 animate-fade-in bg-[var(--overlay)]" onClick={handleClose} />
 
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card border border-border bg-surface">
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl animate-scale-in flex-col overflow-hidden rounded-card bg-surface shadow-lg">
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <h2 className="text-base font-semibold">
+          <h2 className="text-lg font-bold tracking-tight">
             Novo prompt{' '}
-            <span className="ml-2 text-xs font-normal text-text-muted">
+            <span className="ml-2 text-xs font-normal text-text-2">
               Passo {step} de 2 · {step === 1 ? 'Imagens' : 'Detalhes'}
             </span>
           </h2>
@@ -229,7 +237,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
             type="button"
             aria-label="Fechar"
             onClick={handleClose}
-            className="rounded-pill p-1.5 text-text-muted transition duration-150 hover:bg-surface-2 hover:text-text"
+            className="rounded-pill p-1.5 text-text-2 transition duration-150 hover:bg-surface-2 hover:text-text"
           >
             <X size={16} aria-hidden />
           </button>
@@ -247,13 +255,13 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                 onSelectCover={setCoverId}
               />
               {optimizing && (
-                <p className="flex items-center gap-2 text-sm text-text-muted">
+                <p className="flex items-center gap-2 text-sm text-text-2">
                   <Loader2 size={14} aria-hidden className="animate-spin" />
                   Otimizando imagens grandes...
                 </p>
               )}
               {imageError && (
-                <p role="alert" className="text-sm text-accent">
+                <p role="alert" className="text-sm text-danger">
                   {imageError}
                 </p>
               )}
@@ -269,43 +277,30 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                 placeholder="Ex.: Policial federal em pose heroica"
               />
 
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="prompt-text" className="text-sm font-medium text-text-muted">
-                  Prompt *
-                </label>
-                <textarea
-                  id="prompt-text"
-                  rows={6}
-                  value={promptText}
-                  onChange={(e) => setPromptText(e.target.value)}
-                  placeholder="Cole aqui o prompt exato usado na geração"
-                  className="rounded-input border border-border bg-surface-2 px-3 py-2 font-mono text-xs leading-relaxed text-text placeholder:font-sans placeholder:text-sm placeholder:text-text-muted focus:border-accent focus:outline-none"
-                />
-              </div>
+              <Textarea
+                label="Prompt *"
+                rows={6}
+                value={promptText}
+                onChange={(e) => setPromptText(e.target.value)}
+                placeholder="Cole aqui o prompt exato usado na geração"
+                className="font-mono text-xs"
+              />
 
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="negative-prompt" className="text-sm font-medium text-text-muted">
-                  Negative prompt
-                </label>
-                <textarea
-                  id="negative-prompt"
-                  rows={2}
-                  value={negativePrompt}
-                  onChange={(e) => setNegativePrompt(e.target.value)}
-                  className="rounded-input border border-border bg-surface-2 px-3 py-2 font-mono text-xs text-text focus:border-accent focus:outline-none"
-                />
-              </div>
+              <Textarea
+                label="Negative prompt"
+                rows={2}
+                value={negativePrompt}
+                onChange={(e) => setNegativePrompt(e.target.value)}
+                className="font-mono text-xs"
+              />
 
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="model-select" className="text-sm font-medium text-text-muted">
-                  Modelo *
-                </label>
+              <Field label="Modelo *">
                 <div className="flex gap-2">
-                  <select
-                    id="model-select"
+                  <Select
+                    aria-label="Modelo"
                     value={modelChoice}
                     onChange={(e) => setModelChoice(e.target.value)}
-                    className="flex-1 rounded-input border border-border bg-surface-2 px-3 py-2 text-sm text-text focus:border-accent focus:outline-none"
+                    className="flex-1"
                   >
                     {MODEL_OPTIONS.map((option) => (
                       <option key={option} value={option}>
@@ -313,21 +308,20 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                       </option>
                     ))}
                     <option value={OTHER_MODEL}>Outro...</option>
-                  </select>
+                  </Select>
                   {modelChoice === OTHER_MODEL && (
                     <input
                       aria-label="Nome do modelo"
                       value={customModel}
                       onChange={(e) => setCustomModel(e.target.value)}
                       placeholder="Nome do modelo"
-                      className="flex-1 rounded-input border border-border bg-surface-2 px-3 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
+                      className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                     />
                   )}
                 </div>
-              </div>
+              </Field>
 
-              <div className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-text-muted">Categorias * (mín. 1)</span>
+              <Field label="Categorias * (mín. 1)">
                 <div className="flex flex-wrap gap-1.5">
                   {(categories ?? []).map((category) => {
                     const active = categoryIds.includes(category.id)
@@ -337,10 +331,10 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                         type="button"
                         aria-pressed={active}
                         onClick={() => toggleCategory(category.id)}
-                        className={`rounded-pill border px-3 py-1 text-xs font-medium transition duration-150 ${
+                        className={`rounded-pill px-3 py-1.5 text-xs font-medium transition duration-150 ${
                           active
-                            ? 'border-transparent text-white'
-                            : 'border-border bg-surface-2 text-text-muted hover:text-text'
+                            ? 'text-white'
+                            : 'bg-surface-2 text-text-2 hover:text-text'
                         }`}
                         style={active ? { backgroundColor: category.color } : undefined}
                       >
@@ -349,24 +343,21 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                     )
                   })}
                 </div>
-              </div>
+              </Field>
 
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="tag-input" className="text-sm font-medium text-text-muted">
-                  Tags
-                </label>
-                <div className="flex flex-wrap items-center gap-1.5 rounded-input border border-border bg-surface-2 px-2 py-1.5">
+              <Field label="Tags">
+                <div className="flex flex-wrap items-center gap-1.5 rounded-pill bg-surface-2 px-3 py-2">
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center gap-1 rounded-pill bg-surface px-2 py-0.5 text-xs"
+                      className="inline-flex items-center gap-1 rounded-pill bg-surface px-2 py-0.5 text-xs shadow-sm"
                     >
                       #{tag}
                       <button
                         type="button"
                         aria-label={`Remover tag ${tag}`}
                         onClick={() => setTags((current) => current.filter((t) => t !== tag))}
-                        className="text-text-muted hover:text-text"
+                        className="text-text-2 hover:text-text"
                       >
                         <X size={11} aria-hidden />
                       </button>
@@ -387,77 +378,76 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                     className="min-w-[120px] flex-1 bg-transparent px-1 py-0.5 text-sm text-text placeholder:text-text-muted focus:outline-none"
                   />
                 </div>
-              </div>
+              </Field>
 
-              <div className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium text-text-muted">
-                  Parâmetros (aspect ratio, seed, steps...)
-                </span>
-                {paramRows.map((row, index) => (
-                  <div key={index} className="flex gap-2">
-                    <input
-                      aria-label="Nome do parâmetro"
-                      value={row.key}
-                      onChange={(e) =>
-                        setParamRows((current) =>
-                          current.map((r, i) => (i === index ? { ...r, key: e.target.value } : r)),
-                        )
-                      }
-                      placeholder="chave"
-                      className="w-1/3 rounded-input border border-border bg-surface-2 px-3 py-1.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
-                    />
-                    <input
-                      aria-label="Valor do parâmetro"
-                      value={row.value}
-                      onChange={(e) =>
-                        setParamRows((current) =>
-                          current.map((r, i) => (i === index ? { ...r, value: e.target.value } : r)),
-                        )
-                      }
-                      placeholder="valor"
-                      className="flex-1 rounded-input border border-border bg-surface-2 px-3 py-1.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      aria-label="Remover parâmetro"
-                      onClick={() =>
-                        setParamRows((current) => current.filter((_, i) => i !== index))
-                      }
-                      className="rounded-input px-2 text-text-muted hover:text-text"
-                    >
-                      <X size={14} aria-hidden />
-                    </button>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => setParamRows((current) => [...current, { key: '', value: '' }])}
-                  className="self-start text-xs text-text-muted underline-offset-2 hover:text-text hover:underline"
-                >
-                  + adicionar parâmetro
-                </button>
-              </div>
+              <Field label="Parâmetros (aspect ratio, seed, steps...)">
+                <div className="flex flex-col gap-2">
+                  {paramRows.map((row, index) => (
+                    <div key={index} className="flex gap-2">
+                      <input
+                        aria-label="Nome do parâmetro"
+                        value={row.key}
+                        onChange={(e) =>
+                          setParamRows((current) =>
+                            current.map((r, i) => (i === index ? { ...r, key: e.target.value } : r)),
+                          )
+                        }
+                        placeholder="chave"
+                        className="w-1/3 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                      />
+                      <input
+                        aria-label="Valor do parâmetro"
+                        value={row.value}
+                        onChange={(e) =>
+                          setParamRows((current) =>
+                            current.map((r, i) => (i === index ? { ...r, value: e.target.value } : r)),
+                          )
+                        }
+                        placeholder="valor"
+                        className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        aria-label="Remover parâmetro"
+                        onClick={() =>
+                          setParamRows((current) => current.filter((_, i) => i !== index))
+                        }
+                        className="rounded-pill px-2 text-text-2 hover:text-text"
+                      >
+                        <X size={14} aria-hidden />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setParamRows((current) => [...current, { key: '', value: '' }])}
+                    className="self-start text-xs text-text-2 underline-offset-2 hover:text-text hover:underline"
+                  >
+                    + adicionar parâmetro
+                  </button>
+                </div>
+              </Field>
 
               {/* Progresso por imagem durante o envio / após falha parcial */}
               {(submitting || hadFailure) && (
-                <ul className="flex flex-col gap-1 rounded-input border border-border bg-surface-2 p-3">
+                <ul className="flex flex-col gap-1 rounded-input bg-surface-2 p-3">
                   {images.map((image) => {
                     const status = statuses[image.id] ?? 'pending'
                     return (
                       <li key={image.id} className="flex items-center gap-2 text-xs">
                         {status === 'done' && (
-                          <CheckCircle2 size={13} aria-hidden className="text-green-500" />
+                          <CheckCircle2 size={13} aria-hidden className="text-success" />
                         )}
                         {status === 'error' && (
-                          <AlertCircle size={13} aria-hidden className="text-accent" />
+                          <AlertCircle size={13} aria-hidden className="text-danger" />
                         )}
                         {status === 'uploading' && (
-                          <Loader2 size={13} aria-hidden className="animate-spin text-text-muted" />
+                          <Loader2 size={13} aria-hidden className="animate-spin text-text-2" />
                         )}
                         {status === 'pending' && (
                           <span className="inline-block h-[13px] w-[13px] rounded-pill border border-border" />
                         )}
-                        <span className="truncate text-text-muted">{image.file.name}</span>
+                        <span className="truncate text-text-2">{image.file.name}</span>
                       </li>
                     )
                   })}
@@ -465,7 +455,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
               )}
 
               {(formError ?? uploadError) && (
-                <p role="alert" className="text-sm text-accent">
+                <p role="alert" className="text-sm text-danger">
                   {formError ?? uploadError}
                 </p>
               )}
