@@ -1,14 +1,16 @@
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
+import { thumbPath } from '../lib/storage'
 import type { Category, Profile, PromptWithRelations } from '../lib/types'
 import type { PromptFilters } from './useFilters'
 import { useAuth } from './useAuth'
+import { useToast } from '../components/ui/Toast'
 
 export const PAGE_SIZE = 30
 
 const AUTHOR_EMBED = 'author:profiles!prompts_author_id_fkey(*)'
 
-const DETAIL_SELECT = `*, ${AUTHOR_EMBED}, images:prompt_images(*), categories:prompt_categories(category:categories(*)), favorites(count)`
+export const DETAIL_SELECT = `*, ${AUTHOR_EMBED}, images:prompt_images(*), categories:prompt_categories(category:categories(*)), favorites(count)`
 
 type PageParam = string | number | null
 
@@ -118,6 +120,91 @@ export function useCategories() {
         .order('sort_order', { ascending: true })
       if (error) throw new Error(error.message)
       return data as Category[]
+    },
+  })
+}
+
+export interface UpdatePromptInput {
+  id: string
+  title: string
+  promptText: string
+  negativePrompt: string
+  model: string
+  params: Record<string, string>
+  tags: string[]
+  categoryIds: number[]
+}
+
+// Edição do próprio prompt (seção 6.3; RLS garante que só o autor consegue).
+export function useUpdatePrompt() {
+  const queryClient = useQueryClient()
+  const { showToast } = useToast()
+
+  return useMutation({
+    mutationFn: async (input: UpdatePromptInput) => {
+      const { error } = await supabase
+        .from('prompts')
+        .update({
+          title: input.title,
+          prompt_text: input.promptText,
+          negative_prompt: input.negativePrompt || null,
+          model: input.model,
+          params: input.params,
+          tags: input.tags,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', input.id)
+      if (error) throw new Error(error.message)
+
+      // Substitui as categorias (delete + insert; RLS de autor cobre ambos).
+      const { error: deleteError } = await supabase
+        .from('prompt_categories')
+        .delete()
+        .eq('prompt_id', input.id)
+      if (deleteError) throw new Error(deleteError.message)
+      const { error: insertError } = await supabase.from('prompt_categories').insert(
+        input.categoryIds.map((categoryId) => ({
+          prompt_id: input.id,
+          category_id: categoryId,
+        })),
+      )
+      if (insertError) throw new Error(insertError.message)
+    },
+    onSuccess: () => {
+      showToast('Prompt atualizado')
+      void queryClient.invalidateQueries({ queryKey: ['prompts'] })
+    },
+    onError: (error) => {
+      showToast(error instanceof Error ? error.message : 'Erro ao atualizar o prompt.')
+    },
+  })
+}
+
+// Exclusão do próprio prompt (regra 3 da seção 8): limpa as imagens do
+// Storage best-effort no client antes do delete; órfãos eventuais são
+// aceitos no MVP (documentado na spec).
+export function useDeletePrompt() {
+  const queryClient = useQueryClient()
+  const { showToast } = useToast()
+
+  return useMutation({
+    mutationFn: async (prompt: PromptWithRelations) => {
+      const paths = prompt.images.flatMap((image) => [
+        image.storage_path,
+        thumbPath(image.storage_path),
+      ])
+      if (paths.length > 0) {
+        await supabase.storage.from('prompt-images').remove(paths)
+      }
+      const { error } = await supabase.from('prompts').delete().eq('id', prompt.id)
+      if (error) throw new Error(error.message)
+    },
+    onSuccess: () => {
+      showToast('Prompt excluído')
+      void queryClient.invalidateQueries({ queryKey: ['prompts'] })
+    },
+    onError: (error) => {
+      showToast(error instanceof Error ? error.message : 'Erro ao excluir o prompt.')
     },
   })
 }

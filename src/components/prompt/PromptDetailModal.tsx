@@ -1,13 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Copy as CopyIcon, Download, Heart, X } from 'lucide-react'
-import { usePrompt } from '../../hooks/usePrompts'
+import { Copy as CopyIcon, Download, Heart, Pencil, Trash2, X } from 'lucide-react'
+import { useDeletePrompt, usePrompt } from '../../hooks/usePrompts'
+import { useAuth } from '../../hooks/useAuth'
 import { publicImageUrl } from '../../lib/storage'
 import type { PromptImage } from '../../lib/types'
 import { Avatar } from '../ui/Avatar'
 import { Badge } from '../ui/Badge'
+import { ConfirmDialog } from '../ui/ConfirmDialog'
 import { useToast } from '../ui/Toast'
 import { CopyButton } from './CopyButton'
+import { EditPromptModal } from './EditPromptModal'
 import { ImageCarousel } from './ImageCarousel'
 
 // Modal de detalhe deep-linkável em /p/:id (seções 6.2/6.3 da spec).
@@ -17,14 +20,31 @@ export function PromptDetailModal() {
   const navigate = useNavigate()
   const { data: prompt, isLoading, isError } = usePrompt(id)
   const { showToast } = useToast()
+  const { user } = useAuth()
+  const deletePrompt = useDeletePrompt()
+  const [editing, setEditing] = useState(false)
+  const [confirmingDelete, setConfirmingDelete] = useState(false)
+
+  const isAuthor = Boolean(prompt && user && prompt.author_id === user.id)
+
+  async function handleDelete() {
+    if (!prompt) return
+    try {
+      await deletePrompt.mutateAsync(prompt)
+      navigate('/')
+    } catch {
+      setConfirmingDelete(false)
+    }
+  }
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') navigate('/')
+      // Esc fecha o detalhe apenas se nenhum modal filho estiver aberto.
+      if (event.key === 'Escape' && !editing && !confirmingDelete) navigate('/')
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [navigate])
+  }, [navigate, editing, confirmingDelete])
 
   async function downloadOriginal(image: PromptImage) {
     try {
@@ -54,7 +74,7 @@ export function PromptDetailModal() {
     >
       <div className="absolute inset-0 bg-black/70" onClick={() => navigate('/')} />
 
-      <div className="relative z-10 grid max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-card border border-border bg-surface md:grid-cols-2">
+      <div className="relative z-10 grid max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-card border border-border bg-surface md:grid-cols-2 md:overflow-hidden">
         <button
           type="button"
           aria-label="Fechar"
@@ -80,7 +100,7 @@ export function PromptDetailModal() {
           <>
             <ImageCarousel images={prompt.images} title={prompt.title} />
 
-            <div className="flex max-h-[90vh] flex-col gap-4 overflow-y-auto p-6">
+            <div className="flex flex-col gap-4 p-6 md:max-h-[90vh] md:overflow-y-auto">
               <h2 className="text-lg font-semibold">{prompt.title}</h2>
 
               <div className="flex items-center gap-2">
@@ -156,20 +176,54 @@ export function PromptDetailModal() {
                 </div>
               )}
 
-              {cover && (
-                <button
-                  type="button"
-                  onClick={() => downloadOriginal(cover)}
-                  className="inline-flex items-center gap-2 self-start rounded-input border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-text transition duration-150 hover:bg-border"
-                >
-                  <Download size={15} aria-hidden />
-                  Baixar imagem original
-                </button>
-              )}
+              <div className="flex flex-wrap gap-2">
+                {cover && (
+                  <button
+                    type="button"
+                    onClick={() => downloadOriginal(cover)}
+                    className="inline-flex items-center gap-2 rounded-input border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-text transition duration-150 hover:bg-border"
+                  >
+                    <Download size={15} aria-hidden />
+                    Baixar imagem original
+                  </button>
+                )}
+                {isAuthor && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => setEditing(true)}
+                      className="inline-flex items-center gap-2 rounded-input border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-text transition duration-150 hover:bg-border"
+                    >
+                      <Pencil size={15} aria-hidden />
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmingDelete(true)}
+                      className="inline-flex items-center gap-2 rounded-input border border-border bg-surface-2 px-4 py-2 text-sm font-medium text-accent transition duration-150 hover:bg-border"
+                    >
+                      <Trash2 size={15} aria-hidden />
+                      Excluir
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </>
         )}
       </div>
+
+      {prompt && editing && <EditPromptModal prompt={prompt} onClose={() => setEditing(false)} />}
+
+      <ConfirmDialog
+        open={confirmingDelete}
+        title="Excluir prompt?"
+        description={`"${prompt?.title ?? ''}" e suas imagens serão removidos permanentemente. Essa ação não pode ser desfeita.`}
+        confirmLabel="Excluir"
+        loading={deletePrompt.isPending}
+        onConfirm={() => void handleDelete()}
+        onCancel={() => setConfirmingDelete(false)}
+      />
     </div>
   )
 }
