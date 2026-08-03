@@ -39,7 +39,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           <div
             key={toast.id}
             role="status"
-            className="rounded-input border border-border bg-surface-2 px-4 py-2.5 text-sm text-text shadow-lg"
+            className="animate-slide-up rounded-pill bg-text px-5 py-3 text-sm font-medium text-white shadow-md"
           >
             {toast.message}
           </div>
