@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { AuthProvider, useAuth } from './hooks/useAuth'
+import { FiltersProvider } from './hooks/useFilters'
 import { Header } from './components/layout/Header'
 import { ToastProvider } from './components/ui/Toast'
 import { UploadModal } from './components/upload/UploadModal'
@@ -36,11 +37,11 @@ function ProtectedLayout() {
   }
 
   return (
-    <>
+    <FiltersProvider>
       <Header onNewPrompt={() => setUploadOpen(true)} />
       <Outlet context={{ openUpload: () => setUploadOpen(true) } satisfies AppOutletContext} />
       <UploadModal open={uploadOpen} onClose={() => setUploadOpen(false)} />
-    </>
+    </FiltersProvider>
   )
 }
 
