@@ -2,8 +2,11 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '../lib/supabase'
 import type { Category, PromptWithRelations } from '../lib/types'
 
+// profiles!prompts_author_id_fkey: desambigua o embed, pois prompts↔profiles
+// tem dois caminhos (autor direto e many-to-many via favorites) — sem isso o
+// PostgREST responde PGRST201/HTTP 300.
 const LIST_SELECT =
-  '*, author:profiles(*), images:prompt_images(*), categories:prompt_categories(category:categories(*))'
+  '*, author:profiles!prompts_author_id_fkey(*), images:prompt_images(*), categories:prompt_categories(category:categories(*))'
 
 const DETAIL_SELECT = `${LIST_SELECT}, favorites(count)`
 
