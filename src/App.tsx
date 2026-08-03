@@ -26,7 +26,7 @@ function ProtectedLayout() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-text-muted">
+      <div className="flex min-h-screen items-center justify-center text-sm text-text-2">
         Carregando...
       </div>
     )

@@ -45,19 +45,19 @@ export function Login() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg px-4">
-      <div className="w-full max-w-sm rounded-card border border-border bg-surface p-8">
-        <h1 className="mb-6 text-center text-xl font-semibold">
+      <div className="w-full max-w-sm rounded-card bg-surface p-8 shadow-md">
+        <h1 className="mb-6 text-center text-2xl font-extrabold tracking-tight">
           Prompt Lab <span className="text-text-muted">·</span>{' '}
           <span className="text-accent">GCO</span>
         </h1>
 
-        <div role="tablist" className="mb-6 grid grid-cols-2 gap-1 rounded-input bg-surface-2 p-1">
+        <div role="tablist" className="mb-6 grid grid-cols-2 gap-1 rounded-pill bg-surface-2 p-1">
           <button
             role="tab"
             aria-selected={tab === 'signin'}
             onClick={() => switchTab('signin')}
-            className={`rounded-input py-1.5 text-sm font-medium transition duration-150 ${
-              tab === 'signin' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'
+            className={`rounded-pill py-1.5 text-sm font-medium transition duration-150 ${
+              tab === 'signin' ? 'bg-surface font-semibold text-text shadow-sm' : 'text-text-2 hover:text-text'
             }`}
           >
             Entrar
@@ -66,8 +66,8 @@ export function Login() {
             role="tab"
             aria-selected={tab === 'signup'}
             onClick={() => switchTab('signup')}
-            className={`rounded-input py-1.5 text-sm font-medium transition duration-150 ${
-              tab === 'signup' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'
+            className={`rounded-pill py-1.5 text-sm font-medium transition duration-150 ${
+              tab === 'signup' ? 'bg-surface font-semibold text-text shadow-sm' : 'text-text-2 hover:text-text'
             }`}
           >
             Criar conta
@@ -107,12 +107,12 @@ export function Login() {
           />
 
           {error && (
-            <p role="alert" className="text-sm text-accent">
+            <p role="alert" className="text-sm text-danger">
               {error}
             </p>
           )}
 
-          <Button type="submit" disabled={submitting}>
+          <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? 'Aguarde...' : tab === 'signin' ? 'Entrar' : 'Criar conta'}
           </Button>
         </form>

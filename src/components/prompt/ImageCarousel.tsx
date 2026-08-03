@@ -15,7 +15,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
 
   if (!current) {
     return (
-      <div className="flex h-64 items-center justify-center text-sm text-text-muted">
+      <div className="flex h-64 items-center justify-center text-sm text-text-2">
         Sem imagens
       </div>
     )
