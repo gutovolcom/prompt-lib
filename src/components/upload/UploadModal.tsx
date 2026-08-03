@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { AlertCircle, CheckCircle2, Loader2, X } from 'lucide-react'
 import { MODEL_OPTIONS } from '../../lib/config'
+import { compressToWebp } from '../../lib/image'
 import { useCategories } from '../../hooks/usePrompts'
 import { useUpload, type NewPromptData } from '../../hooks/useUpload'
 import { Button } from '../ui/Button'
@@ -36,6 +37,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
   const [images, setImages] = useState<LocalImage[]>([])
   const [coverId, setCoverId] = useState<string | null>(null)
   const [imageError, setImageError] = useState<string | null>(null)
+  const [optimizing, setOptimizing] = useState(false)
 
   const [title, setTitle] = useState('')
   const [promptText, setPromptText] = useState('')
@@ -86,23 +88,35 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
     onClose()
   }
 
-  function addImages(files: File[]) {
+  async function addImages(files: File[]) {
     setImageError(null)
+    setOptimizing(true)
     const accepted: LocalImage[] = []
-    for (const file of files) {
-      if (!ACCEPTED_TYPES.includes(file.type)) {
-        setImageError(`"${file.name}" não é PNG, JPG ou WebP.`)
-        continue
+    try {
+      for (const file of files) {
+        if (!ACCEPTED_TYPES.includes(file.type)) {
+          setImageError(`"${file.name}" não é PNG, JPG ou WebP.`)
+          continue
+        }
+        let finalFile = file
+        if (file.size > MAX_SIZE_BYTES) {
+          // Acima do limite: converte para WebP em alta qualidade no navegador,
+          // mantendo a resolução original.
+          try {
+            finalFile = await compressToWebp(file, MAX_SIZE_BYTES)
+          } catch (err) {
+            setImageError(err instanceof Error ? err.message : `Falha ao otimizar "${file.name}".`)
+            continue
+          }
+        }
+        accepted.push({
+          id: crypto.randomUUID(),
+          file: finalFile,
+          previewUrl: URL.createObjectURL(finalFile),
+        })
       }
-      if (file.size > MAX_SIZE_BYTES) {
-        setImageError(`"${file.name}" passa de 15MB.`)
-        continue
-      }
-      accepted.push({
-        id: crypto.randomUUID(),
-        file,
-        previewUrl: URL.createObjectURL(file),
-      })
+    } finally {
+      setOptimizing(false)
     }
     setImages((current) => {
       const merged = [...current, ...accepted].slice(0, MAX_IMAGES)
@@ -232,6 +246,12 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                 onReorder={reorderImages}
                 onSelectCover={setCoverId}
               />
+              {optimizing && (
+                <p className="flex items-center gap-2 text-sm text-text-muted">
+                  <Loader2 size={14} aria-hidden className="animate-spin" />
+                  Otimizando imagens grandes...
+                </p>
+              )}
               {imageError && (
                 <p role="alert" className="text-sm text-accent">
                   {imageError}
@@ -459,7 +479,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
               <Button type="button" variant="ghost" onClick={handleClose}>
                 Cancelar
               </Button>
-              <Button type="button" disabled={!step1Valid} onClick={() => setStep(2)}>
+              <Button type="button" disabled={!step1Valid || optimizing} onClick={() => setStep(2)}>
                 Continuar
               </Button>
             </>

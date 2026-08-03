@@ -63,7 +63,8 @@ export function ImageDropzone({
         <Upload size={28} aria-hidden className="text-text-muted" />
         <p className="text-sm font-medium">Arraste imagens aqui ou clique para escolher</p>
         <p className="text-xs text-text-muted">
-          PNG, JPG ou WebP · máx. {MAX_IMAGES} imagens · até 15MB cada
+          PNG, JPG ou WebP · máx. {MAX_IMAGES} imagens · acima de 15MB são convertidas para WebP
+          automaticamente
         </p>
         <input
           ref={inputRef}
