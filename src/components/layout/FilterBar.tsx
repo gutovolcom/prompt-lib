@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { SlidersHorizontal } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
 import { useAuthors, useModels } from '../../hooks/usePrompts'
 import { useFilters, type SortOption } from '../../hooks/useFilters'
+import { gsap, prefersReducedMotion } from '../../lib/gsap'
 import { Select } from '../ui/Select'
 import { CategoryPills } from './CategoryPills'
 
@@ -17,15 +19,49 @@ interface FilterBarProps {
 
 // Barra de filtros abaixo do header (seção 6.2): tabs de categoria
 // centralizadas e um botão "Filtros" à direita que expande um painel
-// centralizado com ordenação, Modelo e Autor (padrão Dribbble).
+// centralizado com ordenação, Modelo e Autor (padrão Dribbble). O painel
+// fica sempre montado; só a altura anima entre 0 e o tamanho natural.
 export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
   const { filters, patchFilters } = useFilters()
   const { data: models } = useModels()
   const { data: authors } = useAuthors()
   const [filtersOpen, setFiltersOpen] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const panelContentRef = useRef<HTMLDivElement>(null)
 
   const activeFilterCount =
     [filters.model, filters.authorId].filter(Boolean).length + (filters.sort !== 'recent' ? 1 : 0)
+
+  useGSAP(
+    () => {
+      const el = panelRef.current
+      const content = panelContentRef.current
+      if (!el || !content) return
+
+      if (prefersReducedMotion()) {
+        gsap.set(el, { height: filtersOpen ? 'auto' : 0, opacity: filtersOpen ? 1 : 0 })
+        return
+      }
+
+      if (filtersOpen) {
+        gsap.fromTo(
+          el,
+          { height: 0, opacity: 0 },
+          {
+            height: content.scrollHeight,
+            opacity: 1,
+            duration: 0.25,
+            ease: 'power2.out',
+            onComplete: () => gsap.set(el, { height: 'auto' }),
+          },
+        )
+      } else {
+        gsap.set(el, { height: el.offsetHeight })
+        gsap.to(el, { height: 0, opacity: 0, duration: 0.2, ease: 'power2.in' })
+      }
+    },
+    { dependencies: [filtersOpen] },
+  )
 
   return (
     <div className="flex flex-col gap-3">
@@ -52,9 +88,9 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
         </button>
       </div>
 
-      {filtersOpen && (
-        <div className="flex justify-center">
-          <div className="flex animate-fade-in flex-wrap items-center justify-center gap-3 rounded-input bg-surface-2/60 p-3">
+      <div ref={panelRef} className="overflow-hidden" style={{ height: 0, opacity: 0 }}>
+        <div ref={panelContentRef} className="flex justify-center pt-1">
+          <div className="flex flex-wrap items-center justify-center gap-3 rounded-input bg-surface-2/60 p-3">
             <Select
               aria-label="Ordenação"
               value={filters.sort}
@@ -94,7 +130,7 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
             </Select>
           </div>
         </div>
-      )}
+      </div>
     </div>
   )
 }
