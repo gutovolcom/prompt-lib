@@ -1,8 +1,11 @@
+import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Copy, Heart, ImageOff } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
 import type { PromptWithRelations } from '../../lib/types'
 import { publicImageUrl, thumbPath } from '../../lib/storage'
 import { useFavoriteIds, useToggleFavorite } from '../../hooks/useFavorites'
+import { gsap, prefersReducedMotion } from '../../lib/gsap'
 import { Avatar } from '../ui/Avatar'
 import { Badge } from '../ui/Badge'
 import { CardHoverOverlay } from './CardHoverOverlay'
@@ -19,9 +22,30 @@ export function PromptCard({ prompt }: PromptCardProps) {
   const { data: favoriteIds } = useFavoriteIds()
   const toggleFavorite = useToggleFavorite()
   const isFavorite = favoriteIds?.includes(prompt.id) ?? false
+  const articleRef = useRef<HTMLElement>(null)
+
+  // Reveal suave ao entrar no viewport — funciona tanto no carregamento
+  // inicial quanto para os cards que chegam via infinite scroll.
+  useGSAP(
+    () => {
+      if (prefersReducedMotion()) return
+      gsap.from(articleRef.current, {
+        opacity: 0,
+        y: 16,
+        duration: 0.35,
+        ease: 'power1.out',
+        scrollTrigger: {
+          trigger: articleRef.current,
+          start: 'top 92%',
+          toggleActions: 'play none none reverse',
+        },
+      })
+    },
+    { scope: articleRef },
+  )
 
   return (
-    <article className="group mb-8 break-inside-avoid">
+    <article ref={articleRef} className="group mb-8 break-inside-avoid">
       <div
         className="relative cursor-pointer overflow-hidden rounded-card bg-surface-2"
         onClick={() => navigate(`/p/${prompt.id}`)}
