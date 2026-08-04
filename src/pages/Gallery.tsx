@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { HeartOff, ImagePlus, SearchX } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
 import type { AppOutletContext } from '../App'
 import { usePromptsInfinite } from '../hooks/usePrompts'
 import { useFilters } from '../hooks/useFilters'
+import { gsap, prefersReducedMotion } from '../lib/gsap'
 import { FilterBar } from '../components/layout/FilterBar'
 import { PromptGrid } from '../components/gallery/PromptGrid'
 import { PromptGridSkeleton } from '../components/gallery/PromptGridSkeleton'
@@ -25,6 +27,12 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePromptsInfinite(effectiveFilters)
+
+  const heroRef = useRef<HTMLDivElement>(null)
+  useGSAP(() => {
+    if (prefersReducedMotion()) return
+    gsap.from(heroRef.current, { opacity: 0, y: 16, duration: 0.4, ease: 'power1.out' })
+  }, [])
 
   // Infinite scroll: sentinela observada dispara a próxima página.
   const sentinelRef = useRef<HTMLDivElement>(null)
@@ -95,19 +103,21 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
 
   return (
     <main className="mx-auto flex max-w-[1440px] flex-col gap-8 px-6 pb-16 pt-10">
-      {!favoritesOnly && (
-        <div className="mx-auto max-w-3xl text-center">
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
-            Biblioteca de prompts GCO
-          </h1>
-          <p className="mt-4 text-base text-text-2 sm:text-lg">
-            Prompts de imagem testados pelo time de marketing. Copie, adapte e crie.
-          </p>
-        </div>
-      )}
-      {favoritesOnly && (
-        <h1 className="text-center text-4xl font-extrabold tracking-tight">Favoritos</h1>
-      )}
+      <div ref={heroRef}>
+        {!favoritesOnly && (
+          <div className="mx-auto max-w-3xl text-center">
+            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
+              Biblioteca de prompts GCO
+            </h1>
+            <p className="mt-4 text-base text-text-2 sm:text-lg">
+              Prompts de imagem testados pelo time de marketing. Copie, adapte e crie.
+            </p>
+          </div>
+        )}
+        {favoritesOnly && (
+          <h1 className="text-center text-4xl font-extrabold tracking-tight">Favoritos</h1>
+        )}
+      </div>
 
       <FilterBar hideFavoritesPill={favoritesOnly} />
 
