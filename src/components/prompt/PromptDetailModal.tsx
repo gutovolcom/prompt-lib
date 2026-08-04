@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useMatch, useNavigate } from 'react-router-dom'
 import {
   ChevronDown,
   Copy as CopyIcon,
@@ -13,6 +13,7 @@ import { useDeletePrompt, usePrompt } from '../../hooks/usePrompts'
 import { useAuth } from '../../hooks/useAuth'
 import { publicImageUrl } from '../../lib/storage'
 import type { PromptImage } from '../../lib/types'
+import { AnimatedModal } from '../ui/AnimatedModal'
 import { Avatar } from '../ui/Avatar'
 import { Badge } from '../ui/Badge'
 import { Button } from '../ui/Button'
@@ -23,11 +24,22 @@ import { EditPromptModal } from './EditPromptModal'
 import { ImageCarousel } from './ImageCarousel'
 
 // Modal de detalhe deep-linkável em /p/:id (seções 6.2/6.3 da spec).
-// Renderizado por cima da galeria; fechar volta para /.
+// Fica sempre montado no layout protegido (como o UploadModal) e deriva
+// a visibilidade da rota via `useMatch`, para poder animar a saída antes
+// de desmontar de fato — ao contrário de ser montado/desmontado pela rota.
 export function PromptDetailModal() {
-  const { id } = useParams<{ id: string }>()
+  const match = useMatch('/p/:id')
+  const open = Boolean(match)
   const navigate = useNavigate()
-  const { data: prompt, isLoading, isError } = usePrompt(id)
+
+  // Mantém o último id visível durante a animação de saída (a rota já
+  // mudou pra "/" nesse momento, então `match` já é null).
+  const [displayId, setDisplayId] = useState<string | undefined>(match?.params.id)
+  useEffect(() => {
+    if (match?.params.id) setDisplayId(match.params.id)
+  }, [match?.params.id])
+
+  const { data: prompt, isLoading, isError } = usePrompt(displayId)
   const { showToast } = useToast()
   const { user } = useAuth()
   const deletePrompt = useDeletePrompt()
@@ -75,19 +87,15 @@ export function PromptDetailModal() {
   const cover = prompt?.images.find((image) => image.is_cover) ?? prompt?.images[0]
 
   return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label={prompt?.title ?? 'Detalhe do prompt'}
-    >
-      <div
-        className="absolute inset-0 animate-fade-in bg-[var(--overlay)]"
-        onClick={() => navigate('/')}
-      />
-
-      <div className="relative z-10 grid max-h-[90vh] w-full max-w-5xl animate-scale-in overflow-y-auto rounded-card bg-surface shadow-lg md:grid-cols-2 md:overflow-hidden">
-        <button
+    <>
+      <AnimatedModal
+        open={open}
+        ariaLabel={prompt?.title ?? 'Detalhe do prompt'}
+        panelClassName="grid max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-card bg-surface shadow-lg md:grid-cols-2 md:overflow-hidden"
+        onBackdropClick={() => navigate('/')}
+      >
+        <>
+          <button
           type="button"
           aria-label="Fechar"
           onClick={() => navigate('/')}
@@ -236,9 +244,12 @@ export function PromptDetailModal() {
             </div>
           </>
         )}
-      </div>
+        </>
+      </AnimatedModal>
 
-      {prompt && editing && <EditPromptModal prompt={prompt} onClose={() => setEditing(false)} />}
+      {prompt && (
+        <EditPromptModal prompt={prompt} open={editing} onClose={() => setEditing(false)} />
+      )}
 
       <ConfirmDialog
         open={confirmingDelete}
@@ -249,6 +260,6 @@ export function PromptDetailModal() {
         onConfirm={() => void handleDelete()}
         onCancel={() => setConfirmingDelete(false)}
       />
-    </div>
+    </>
   )
 }

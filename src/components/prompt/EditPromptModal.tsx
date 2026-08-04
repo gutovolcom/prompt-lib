@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { MODEL_OPTIONS } from '../../lib/config'
 import type { PromptWithRelations } from '../../lib/types'
 import { useCategories, useUpdatePrompt } from '../../hooks/usePrompts'
+import { AnimatedModal } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
 import { Field } from '../ui/Field'
 import { Input } from '../ui/Input'
@@ -11,24 +12,41 @@ import { Textarea } from '../ui/Textarea'
 
 interface EditPromptModalProps {
   prompt: PromptWithRelations
+  open: boolean
   onClose: () => void
 }
 
 const OTHER_MODEL = '__outro__'
 const FIXED_MODELS: readonly string[] = MODEL_OPTIONS
 
+function fieldsFromPrompt(prompt: PromptWithRelations) {
+  const isFixedModel = FIXED_MODELS.includes(prompt.model)
+  return {
+    title: prompt.title,
+    promptText: prompt.prompt_text,
+    negativePrompt: prompt.negative_prompt ?? '',
+    modelChoice: isFixedModel ? prompt.model : OTHER_MODEL,
+    customModel: isFixedModel ? '' : prompt.model,
+    categoryIds: prompt.categories.map(({ category }) => category.id),
+    tags: prompt.tags,
+    paramRows: Object.entries(prompt.params).map(([key, value]) => ({ key, value: String(value) })),
+  }
+}
+
 // Edição de metadados do próprio prompt (seção 6.3). Imagens não são
-// editáveis no MVP — exclua e republique se precisar trocá-las.
-export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
+// editáveis no MVP — exclua e republique se precisar trocá-las. Fica
+// sempre montado (visibilidade via `open`) para permitir a animação de
+// saída — os campos são reinicializados a partir de `prompt` toda vez
+// que o modal reabre.
+export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps) {
   const { data: categories } = useCategories()
   const updatePrompt = useUpdatePrompt()
 
-  const isFixedModel = FIXED_MODELS.includes(prompt.model)
   const [title, setTitle] = useState(prompt.title)
   const [promptText, setPromptText] = useState(prompt.prompt_text)
   const [negativePrompt, setNegativePrompt] = useState(prompt.negative_prompt ?? '')
-  const [modelChoice, setModelChoice] = useState(isFixedModel ? prompt.model : OTHER_MODEL)
-  const [customModel, setCustomModel] = useState(isFixedModel ? '' : prompt.model)
+  const [modelChoice, setModelChoice] = useState(() => fieldsFromPrompt(prompt).modelChoice)
+  const [customModel, setCustomModel] = useState(() => fieldsFromPrompt(prompt).customModel)
   const [categoryIds, setCategoryIds] = useState<number[]>(
     prompt.categories.map(({ category }) => category.id),
   )
@@ -38,6 +56,22 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
     Object.entries(prompt.params).map(([key, value]) => ({ key, value: String(value) })),
   )
   const [formError, setFormError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!open) return
+    const fresh = fieldsFromPrompt(prompt)
+    setTitle(fresh.title)
+    setPromptText(fresh.promptText)
+    setNegativePrompt(fresh.negativePrompt)
+    setModelChoice(fresh.modelChoice)
+    setCustomModel(fresh.customModel)
+    setCategoryIds(fresh.categoryIds)
+    setTags(fresh.tags)
+    setParamRows(fresh.paramRows)
+    setFormError(null)
+    // Só reinicializa quando o modal (re)abre, não a cada edição de `prompt`.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open])
 
   const resolvedModel = modelChoice === OTHER_MODEL ? customModel.trim() : modelChoice
 
@@ -83,14 +117,14 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label={`Editar ${prompt.title}`}
+    <AnimatedModal
+      open={open}
+      ariaLabel={`Editar ${prompt.title}`}
+      overlayClassName="fixed inset-0 z-50 flex items-center justify-center p-4"
+      panelClassName="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card bg-surface shadow-lg"
+      onBackdropClick={onClose}
     >
-      <div className="absolute inset-0 animate-fade-in bg-[var(--overlay)]" onClick={onClose} />
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl animate-scale-in flex-col overflow-hidden rounded-card bg-surface shadow-lg">
+      <>
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="text-lg font-bold tracking-tight">Editar prompt</h2>
           <button
@@ -272,7 +306,7 @@ export function EditPromptModal({ prompt, onClose }: EditPromptModalProps) {
             {updatePrompt.isPending ? 'Salvando...' : 'Salvar alterações'}
           </Button>
         </div>
-      </div>
-    </div>
+      </>
+    </AnimatedModal>
   )
 }

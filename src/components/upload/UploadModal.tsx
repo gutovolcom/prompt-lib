@@ -4,6 +4,7 @@ import { MODEL_OPTIONS } from '../../lib/config'
 import { compressToWebp } from '../../lib/image'
 import { useCategories } from '../../hooks/usePrompts'
 import { useUpload, type NewPromptData } from '../../hooks/useUpload'
+import { AnimatedModal } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
 import { Field } from '../ui/Field'
 import { Input } from '../ui/Input'
@@ -63,8 +64,6 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
     }
   }, [open])
 
-  if (!open) return null
-
   function resetAll() {
     images.forEach((image) => URL.revokeObjectURL(image.previewUrl))
     setStep(1)
@@ -87,7 +86,6 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
 
   function handleClose() {
     if (submitting) return
-    resetAll()
     onClose()
   }
 
@@ -207,7 +205,6 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
     const ok = await submit(data)
     if (ok) {
       showToast('Prompt publicado')
-      resetAll()
       onClose()
     } else {
       setHadFailure(true)
@@ -217,15 +214,14 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
   const step1Valid = images.length > 0
 
   return (
-    <div
-      className="fixed inset-0 z-40 flex items-center justify-center p-4"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Novo prompt"
+    <AnimatedModal
+      open={open}
+      onExited={resetAll}
+      ariaLabel="Novo prompt"
+      panelClassName="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card bg-surface shadow-lg"
+      onBackdropClick={handleClose}
     >
-      <div className="absolute inset-0 animate-fade-in bg-[var(--overlay)]" onClick={handleClose} />
-
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl animate-scale-in flex-col overflow-hidden rounded-card bg-surface shadow-lg">
+      <>
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="text-lg font-bold tracking-tight">
             Novo prompt{' '}
@@ -489,7 +485,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
             </>
           )}
         </div>
-      </div>
-    </div>
+      </>
+    </AnimatedModal>
   )
 }

@@ -41,6 +41,9 @@ function ProtectedLayout() {
       <Header onNewPrompt={() => setUploadOpen(true)} />
       <Outlet context={{ openUpload: () => setUploadOpen(true) } satisfies AppOutletContext} />
       <UploadModal open={uploadOpen} onClose={() => setUploadOpen(false)} />
+      {/* Sempre montado (como o UploadModal): deriva visibilidade da rota
+          via useMatch para poder animar a saída antes de desmontar. */}
+      <PromptDetailModal />
     </FiltersProvider>
   )
 }
@@ -55,16 +58,9 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route element={<ProtectedLayout />}>
                 <Route path="/" element={<Gallery />} />
-                {/* Modal de detalhe deep-linkável por cima da galeria */}
-                <Route
-                  path="/p/:id"
-                  element={
-                    <>
-                      <Gallery />
-                      <PromptDetailModal />
-                    </>
-                  }
-                />
+                {/* Modal de detalhe deep-linkável: PromptDetailModal é montado
+                    globalmente em ProtectedLayout e reage à rota via useMatch. */}
+                <Route path="/p/:id" element={<Gallery />} />
                 <Route path="/favoritos" element={<Favorites />} />
                 <Route path="/perfil/:id" element={<Profile />} />
               </Route>
