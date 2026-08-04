@@ -38,7 +38,7 @@ export function Header({ onNewPrompt }: HeaderProps) {
 
         <SearchBar />
 
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="ml-auto flex shrink-0 items-center gap-3">
           <Button type="button" onClick={onNewPrompt} aria-label="Novo prompt">
             <Plus size={16} aria-hidden />
             <span className="hidden sm:inline">Novo prompt</span>

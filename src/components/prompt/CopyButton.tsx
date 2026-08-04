@@ -7,7 +7,7 @@ import { useToast } from '../ui/Toast'
 interface CopyButtonProps {
   promptId: string
   promptText: string
-  size?: 'sm' | 'lg'
+  size?: 'sm' | 'lg' | 'icon'
 }
 
 // Ação nº 1 do produto: copiar o prompt (clipboard + toast + RPC de contagem).
@@ -36,6 +36,22 @@ export function CopyButton({ promptId, promptText, size = 'sm' }: CopyButtonProp
     if (!error) {
       void queryClient.invalidateQueries({ queryKey: ['prompts'] })
     }
+  }
+
+  if (size === 'icon') {
+    return (
+      <button
+        type="button"
+        onClick={handleCopy}
+        title="Copiar prompt"
+        aria-label="Copiar prompt"
+        className={`flex h-9 w-9 items-center justify-center rounded-pill shadow-md backdrop-blur-sm transition duration-150 ${
+          copied ? 'bg-success text-white' : 'bg-surface/90 text-text hover:bg-surface'
+        }`}
+      >
+        {copied ? <Check size={15} aria-hidden /> : <Copy size={15} aria-hidden />}
+      </button>
+    )
   }
 
   const sizeClasses = size === 'lg' ? 'w-full px-4 py-2.5 text-sm' : 'px-3 py-1.5 text-xs'

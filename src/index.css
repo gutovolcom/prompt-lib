@@ -9,7 +9,7 @@
   --surface: #ffffff; /* header, cards, modais */
   --surface-2: #f4f5f7; /* pill de busca, inputs, tab ativa, hover */
   --surface-3: #eceef1; /* hover de surface-2, pressed */
-  --border: #e7e7e9;
+  --border: #d6d7db; /* contraste ~1.7:1 no branco — visível o bastante para bordas funcionais */
   /* Texto */
   --text: #0d0c22; /* títulos e corpo forte */
   --text-2: #6e6d7a; /* corpo secundário — contraste 4.9:1 no branco */
@@ -52,5 +52,15 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
     }
+  }
+
+  /* Esconde a scrollbar em trilhos horizontais (tabs de categoria etc.)
+     sem remover a rolagem — o overflow continua funcionando via wheel/drag. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

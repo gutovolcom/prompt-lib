@@ -17,7 +17,7 @@ export function CategoryPills({ hideFavoritesPill = false }: CategoryPillsProps)
   const inactive = 'text-text-2 hover:text-text'
 
   return (
-    <div className="flex items-center gap-1 overflow-x-auto">
+    <div className="no-scrollbar flex items-center gap-1 overflow-x-auto">
       <button
         type="button"
         aria-pressed={filters.categoryId === null}
