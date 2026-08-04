@@ -28,17 +28,22 @@ export function Header({ onNewPrompt }: HeaderProps) {
 
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-surface">
-      <div className="mx-auto flex h-20 max-w-[1440px] items-center gap-3 px-6 sm:gap-6">
-        <Link to="/" className="shrink-0 text-lg font-extrabold tracking-tight">
+      <div className="relative mx-auto flex h-20 max-w-[1440px] items-center px-6">
+        <Link to="/" className="z-10 shrink-0 text-lg font-extrabold tracking-tight">
           <span className="hidden text-text sm:inline">
             Prompt Lab <span className="text-text-muted">·</span>{' '}
           </span>
           <span className="text-accent">GCO</span>
         </Link>
 
-        <SearchBar />
+        {/* Busca centralizada na tela, independente da largura da logo/ações */}
+        <div className="pointer-events-none absolute inset-0 hidden items-center justify-center sm:flex">
+          <div className="pointer-events-auto w-full max-w-xs sm:max-w-sm">
+            <SearchBar />
+          </div>
+        </div>
 
-        <div className="ml-auto flex shrink-0 items-center gap-3">
+        <div className="z-10 ml-auto flex shrink-0 items-center gap-3">
           <Button type="button" onClick={onNewPrompt} aria-label="Novo prompt">
             <Plus size={16} aria-hidden />
             <span className="hidden sm:inline">Novo prompt</span>
