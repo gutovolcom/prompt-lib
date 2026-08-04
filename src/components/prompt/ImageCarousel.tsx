@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
 import type { PromptImage } from '../../lib/types'
 import { publicImageUrl } from '../../lib/storage'
+import { gsap, prefersReducedMotion } from '../../lib/gsap'
 
 interface ImageCarouselProps {
   images: PromptImage[]
@@ -12,6 +14,14 @@ interface ImageCarouselProps {
 export function ImageCarousel({ images, title }: ImageCarouselProps) {
   const [index, setIndex] = useState(0)
   const current = images[index] ?? images[0]
+  const imgRef = useRef<HTMLImageElement>(null)
+
+  // Crossfade: some rapidamente, troca o src, e volta a aparecer — em vez
+  // da troca abrupta de imagem.
+  useGSAP(() => {
+    if (prefersReducedMotion()) return
+    gsap.fromTo(imgRef.current, { opacity: 0 }, { opacity: 1, duration: 0.2, ease: 'power1.out' })
+  }, [index])
 
   if (!current) {
     return (
@@ -26,6 +36,8 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
   return (
     <div className="relative flex h-full min-h-[240px] items-center justify-center bg-surface-2 md:min-h-[300px]">
       <img
+        ref={imgRef}
+        key={current.id}
         src={publicImageUrl(current.storage_path)}
         alt={title}
         className="max-h-[50vh] w-full object-contain md:max-h-[80vh]"

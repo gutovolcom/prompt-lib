@@ -1,13 +1,36 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Check, Copy } from 'lucide-react'
 import { useQueryClient } from '@tanstack/react-query'
+import { useGSAP } from '@gsap/react'
 import { supabase } from '../../lib/supabase'
+import { gsap, prefersReducedMotion } from '../../lib/gsap'
 import { useToast } from '../ui/Toast'
 
 interface CopyButtonProps {
   promptId: string
   promptText: string
   size?: 'sm' | 'lg' | 'icon'
+}
+
+// Ícone Copy/Check com um pequeno "pop" ao trocar de estado — a troca de
+// `key` força o remount, o que já dispara a entrada configurada no useGSAP.
+function SwapIcon({ copied, size }: { copied: boolean; size: number }) {
+  const ref = useRef<HTMLSpanElement>(null)
+
+  useGSAP(() => {
+    if (prefersReducedMotion()) return
+    gsap.fromTo(
+      ref.current,
+      { scale: 0.5, rotate: -30, opacity: 0 },
+      { scale: 1, rotate: 0, opacity: 1, duration: 0.25, ease: 'back.out(2)' },
+    )
+  }, [])
+
+  return (
+    <span key={copied ? 'check' : 'copy'} ref={ref} className="inline-flex">
+      {copied ? <Check size={size} aria-hidden /> : <Copy size={size} aria-hidden />}
+    </span>
+  )
 }
 
 // Ação nº 1 do produto: copiar o prompt (clipboard + toast + RPC de contagem).
@@ -49,7 +72,7 @@ export function CopyButton({ promptId, promptText, size = 'sm' }: CopyButtonProp
           copied ? 'bg-success text-white' : 'bg-surface/90 text-text hover:bg-surface'
         }`}
       >
-        {copied ? <Check size={15} aria-hidden /> : <Copy size={15} aria-hidden />}
+        <SwapIcon copied={copied} size={15} />
       </button>
     )
   }
@@ -64,17 +87,8 @@ export function CopyButton({ promptId, promptText, size = 'sm' }: CopyButtonProp
         copied ? 'bg-success' : 'bg-accent hover:bg-accent-hover'
       } ${sizeClasses}`}
     >
-      {copied ? (
-        <>
-          <Check size={size === 'lg' ? 16 : 13} aria-hidden />
-          Copiado!
-        </>
-      ) : (
-        <>
-          <Copy size={size === 'lg' ? 16 : 13} aria-hidden />
-          Copiar prompt
-        </>
-      )}
+      <SwapIcon copied={copied} size={size === 'lg' ? 16 : 13} />
+      {copied ? 'Copiado!' : 'Copiar prompt'}
     </button>
   )
 }
