@@ -1,23 +1,23 @@
-import { Heart } from 'lucide-react'
 import { useCategories } from '../../hooks/usePrompts'
 import { useFilters } from '../../hooks/useFilters'
 
-interface CategoryPillsProps {
-  /** Na página /favoritos o filtro já é forçado; a pill fica oculta. */
-  hideFavoritesPill?: boolean
-}
+// Classes compartilhadas com a aba "Favoritos" (renderizada em FilterBar.tsx,
+// fora da região com scroll — ver comentário lá sobre por que ela não pode
+// morar dentro deste componente).
+export const TAB_BASE =
+  'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-tab border border-b-0 border-text/35 px-4 py-2 font-mono text-[12.5px] font-bold uppercase tracking-[0.08em] transition-all duration-150'
+export const TAB_ACTIVE = 'border-text bg-surface pb-[9px] pt-[11px] text-text'
+export const TAB_INACTIVE = 'bg-surface-2/60 text-text-2 hover:-translate-y-0.5 hover:text-text'
 
 // Seções do arquivo: abas de fichário (Todos + categorias na ordem
-// sort_order) + aba Favoritos. A aba ativa "sobe" e ganha o fundo de papel,
-// como se estivesse à frente das outras no fichário.
-export function CategoryPills({ hideFavoritesPill = false }: CategoryPillsProps) {
+// sort_order). A aba ativa "sobe" e ganha o fundo de papel, como se
+// estivesse à frente das outras no fichário. Fica dentro de uma região com
+// overflow-x-auto (scroll horizontal) quando há muitas categorias — por
+// isso a aba Favoritos, que precisa estar sempre visível junto do botão
+// Filtros, é renderizada fora deste componente.
+export function CategoryPills() {
   const { data: categories } = useCategories()
   const { filters, patchFilters } = useFilters()
-
-  const tabBase =
-    'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-tab border border-b-0 border-text/35 px-4 py-2 font-mono text-[12.5px] font-bold uppercase tracking-[0.08em] transition-all duration-150'
-  const active = 'border-text bg-surface pb-[9px] pt-[11px] text-text'
-  const inactive = 'bg-surface-2/60 text-text-2 hover:-translate-y-0.5 hover:text-text'
 
   return (
     <div className="no-scrollbar flex items-end gap-1.5 overflow-x-auto">
@@ -25,7 +25,7 @@ export function CategoryPills({ hideFavoritesPill = false }: CategoryPillsProps)
         type="button"
         aria-pressed={filters.categoryId === null}
         onClick={() => patchFilters({ categoryId: null })}
-        className={`${tabBase} ${filters.categoryId === null ? active : inactive}`}
+        className={`${TAB_BASE} ${filters.categoryId === null ? TAB_ACTIVE : TAB_INACTIVE}`}
       >
         Todos
       </button>
@@ -37,7 +37,7 @@ export function CategoryPills({ hideFavoritesPill = false }: CategoryPillsProps)
             type="button"
             aria-pressed={isActive}
             onClick={() => patchFilters({ categoryId: isActive ? null : category.id })}
-            className={`${tabBase} ${isActive ? active : inactive}`}
+            className={`${TAB_BASE} ${isActive ? TAB_ACTIVE : TAB_INACTIVE}`}
           >
             <span
               className="h-2 w-2 rounded-full border border-text/30"
@@ -48,22 +48,6 @@ export function CategoryPills({ hideFavoritesPill = false }: CategoryPillsProps)
           </button>
         )
       })}
-      {!hideFavoritesPill && (
-        <button
-          type="button"
-          aria-pressed={filters.favoritesOnly}
-          onClick={() => patchFilters({ favoritesOnly: !filters.favoritesOnly })}
-          className={`${tabBase} ${filters.favoritesOnly ? active : inactive}`}
-        >
-          <Heart
-            size={13}
-            aria-hidden
-            fill={filters.favoritesOnly ? 'currentColor' : 'none'}
-            className={filters.favoritesOnly ? 'text-accent' : undefined}
-          />
-          Favoritos
-        </button>
-      )}
     </div>
   )
 }

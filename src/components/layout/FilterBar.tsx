@@ -1,11 +1,11 @@
 import { useRef, useState } from 'react'
-import { SlidersHorizontal } from 'lucide-react'
+import { Heart, SlidersHorizontal } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import { useAuthors, useModels } from '../../hooks/usePrompts'
 import { useFilters, type SortOption } from '../../hooks/useFilters'
 import { gsap, prefersReducedMotion } from '../../lib/gsap'
 import { Select } from '../ui/Select'
-import { CategoryPills } from './CategoryPills'
+import { CategoryPills, TAB_ACTIVE, TAB_BASE, TAB_INACTIVE } from './CategoryPills'
 
 const SORT_LABELS: Record<SortOption, string> = {
   recent: 'Recentes',
@@ -67,8 +67,25 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
     <div className="flex flex-col gap-0">
       <div className="flex items-end gap-1.5 border-b-2 border-text pb-0">
         <div className="min-w-0 flex-1 overflow-hidden">
-          <CategoryPills hideFavoritesPill={hideFavoritesPill} />
+          <CategoryPills />
         </div>
+
+        {!hideFavoritesPill && (
+          <button
+            type="button"
+            aria-pressed={filters.favoritesOnly}
+            onClick={() => patchFilters({ favoritesOnly: !filters.favoritesOnly })}
+            className={`${TAB_BASE} ${filters.favoritesOnly ? TAB_ACTIVE : TAB_INACTIVE}`}
+          >
+            <Heart
+              size={13}
+              aria-hidden
+              fill={filters.favoritesOnly ? 'currentColor' : 'none'}
+              className={filters.favoritesOnly ? 'text-accent' : undefined}
+            />
+            Favoritos
+          </button>
+        )}
 
         <button
           type="button"
