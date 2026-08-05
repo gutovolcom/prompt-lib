@@ -11,8 +11,12 @@ const VISIBLE_CATEGORIES = 4
 // morar dentro deste componente).
 export const TAB_BASE =
   'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-tab border border-b-0 border-text/35 px-4 py-2 font-mono text-[12.5px] font-bold uppercase tracking-[0.08em] transition-all duration-150'
+// A aba ativa é 4px mais alta (pt 11 + pb 9 vs py-2 = 16); o mt-1 nas
+// inativas iguala a ALTURA EXTERNA de todas as abas — sem isso a linha
+// inteira muda de altura ao trocar a aba ativa e a barra "pula".
 export const TAB_ACTIVE = 'border-text bg-surface pb-[9px] pt-[11px] text-text'
-export const TAB_INACTIVE = 'bg-surface-2/60 text-text-2 hover:-translate-y-0.5 hover:text-text'
+export const TAB_INACTIVE =
+  'mt-1 bg-surface-2/60 text-text-2 hover:-translate-y-0.5 hover:text-text'
 
 // Seções do arquivo: abas de fichário (Todos + as primeiras categorias na
 // ordem sort_order). A aba ativa "sobe" e ganha o fundo de papel, como se

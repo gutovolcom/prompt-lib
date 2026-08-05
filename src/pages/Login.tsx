@@ -59,7 +59,7 @@ export function Login() {
             aria-selected={tab === 'signin'}
             onClick={() => switchTab('signin')}
             className={`flex-1 rounded-tab border border-b-0 border-text/35 py-2 font-mono text-xs font-bold uppercase tracking-[0.06em] transition-all duration-150 ${
-              tab === 'signin' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'bg-surface-2/60 text-text-2 hover:text-text'
+              tab === 'signin' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'mt-1 bg-surface-2/60 text-text-2 hover:text-text'
             }`}
           >
             Entrar
@@ -69,7 +69,7 @@ export function Login() {
             aria-selected={tab === 'signup'}
             onClick={() => switchTab('signup')}
             className={`flex-1 rounded-tab border border-b-0 border-text/35 py-2 font-mono text-xs font-bold uppercase tracking-[0.06em] transition-all duration-150 ${
-              tab === 'signup' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'bg-surface-2/60 text-text-2 hover:text-text'
+              tab === 'signup' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'mt-1 bg-surface-2/60 text-text-2 hover:text-text'
             }`}
           >
             Criar conta

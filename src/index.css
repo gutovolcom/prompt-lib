@@ -52,6 +52,13 @@
 }
 
 @layer base {
+  /* Reserva o espaço da scrollbar mesmo quando ela não é necessária —
+     sem isso, conteúdo que muda de altura (painel de filtros, grid
+     carregando) faz a scrollbar aparecer/sumir e desloca a página. */
+  html {
+    scrollbar-gutter: stable;
+  }
+
   body {
     @apply bg-bg text-text font-sans antialiased;
   }
