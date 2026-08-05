@@ -52,11 +52,29 @@
 }
 
 @layer base {
-  /* Reserva o espaço da scrollbar mesmo quando ela não é necessária —
-     sem isso, conteúdo que muda de altura (painel de filtros, grid
-     carregando) faz a scrollbar aparecer/sumir e desloca a página. */
+  /* Scrollbar sempre presente e tematizada. overflow-y: scroll mantém o
+     trilho fixo (sem ele, conteúdo que muda de altura — painel de filtros,
+     grid carregando — faz a barra aparecer/sumir, deslocando a página e
+     trocando o visual da barra no Windows). As cores em tom de papel deixam
+     o trilho praticamente invisível quando não há rolagem. */
   html {
-    scrollbar-gutter: stable;
+    overflow-y: scroll;
+    scrollbar-color: rgb(var(--border)) rgb(var(--bg)); /* Firefox + Chrome novos */
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgb(var(--bg));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--border));
+    border: 3px solid rgb(var(--bg));
+    border-radius: 6px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(var(--text-muted));
   }
 
   body {
