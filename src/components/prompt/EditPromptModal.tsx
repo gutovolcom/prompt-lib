@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
 import { MODEL_OPTIONS } from '../../lib/config'
 import type { PromptWithRelations } from '../../lib/types'
+import { parseTags } from '../../lib/tags'
 import { useCategories, useUpdatePrompt } from '../../hooks/usePrompts'
 import { AnimatedModal } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
@@ -82,8 +83,7 @@ export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps)
   }
 
   function addTagFromInput() {
-    const value = tagInput.trim().replace(/,+$/, '')
-    if (value && !tags.includes(value)) setTags((current) => [...current, value])
+    setTags((current) => parseTags(tagInput, current))
     setTagInput('')
   }
 

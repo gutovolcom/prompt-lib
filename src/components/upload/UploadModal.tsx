@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { AlertCircle, CheckCircle2, Loader2, X } from 'lucide-react'
 import { MODEL_OPTIONS } from '../../lib/config'
 import { compressToWebp } from '../../lib/image'
+import { parseTags } from '../../lib/tags'
 import { useCategories } from '../../hooks/usePrompts'
 import { useUpload, type NewPromptData } from '../../hooks/useUpload'
 import { AnimatedModal } from '../ui/AnimatedModal'
@@ -150,8 +151,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
   }
 
   function addTagFromInput() {
-    const value = tagInput.trim().replace(/,+$/, '')
-    if (value && !tags.includes(value)) setTags((current) => [...current, value])
+    setTags((current) => parseTags(tagInput, current))
     setTagInput('')
   }
 
