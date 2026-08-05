@@ -53,7 +53,7 @@ function ToastEntry({ toast, onDone }: { toast: ToastItem; onDone: (id: number) 
     <div
       ref={ref}
       role="status"
-      className="rounded-pill bg-text px-5 py-3 text-sm font-medium text-white shadow-md"
+      className="rounded-input border-[1.5px] border-text border-l-[6px] border-l-accent bg-surface px-[18px] py-3 font-mono text-[13px] font-bold text-text shadow-hard"
     >
       {toast.message}
     </div>
