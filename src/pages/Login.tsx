@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { ALLOWED_DOMAINS } from '../lib/config'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
+import logoUrl from '../assets/logo-prompt-lib-login.svg'
 
 type Tab = 'signin' | 'signup'
 
@@ -45,19 +46,20 @@ export function Login() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg px-4">
-      <div className="w-full max-w-sm rounded-card border border-border bg-surface p-8">
-        <h1 className="mb-6 text-center text-xl font-semibold">
-          Prompt Lab <span className="text-text-muted">·</span>{' '}
-          <span className="text-accent">GCO</span>
-        </h1>
+      <div className="w-full max-w-sm rounded-card border border-border bg-surface p-8 shadow-md">
+        <img
+          src={logoUrl}
+          alt="Prompt Lab — arquivo de fórmulas"
+          className="mx-auto mb-6 h-12 w-auto"
+        />
 
-        <div role="tablist" className="mb-6 grid grid-cols-2 gap-1 rounded-input bg-surface-2 p-1">
+        <div role="tablist" className="mb-6 flex items-end gap-1 border-b-2 border-text">
           <button
             role="tab"
             aria-selected={tab === 'signin'}
             onClick={() => switchTab('signin')}
-            className={`rounded-input py-1.5 text-sm font-medium transition duration-150 ${
-              tab === 'signin' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'
+            className={`flex-1 rounded-tab border border-b-0 border-text/35 py-2 font-mono text-xs font-bold uppercase tracking-[0.06em] transition-all duration-150 ${
+              tab === 'signin' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'mt-1 bg-surface-2/60 text-text-2 hover:text-text'
             }`}
           >
             Entrar
@@ -66,8 +68,8 @@ export function Login() {
             role="tab"
             aria-selected={tab === 'signup'}
             onClick={() => switchTab('signup')}
-            className={`rounded-input py-1.5 text-sm font-medium transition duration-150 ${
-              tab === 'signup' ? 'bg-accent text-white' : 'text-text-muted hover:text-text'
+            className={`flex-1 rounded-tab border border-b-0 border-text/35 py-2 font-mono text-xs font-bold uppercase tracking-[0.06em] transition-all duration-150 ${
+              tab === 'signup' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'mt-1 bg-surface-2/60 text-text-2 hover:text-text'
             }`}
           >
             Criar conta
@@ -107,12 +109,12 @@ export function Login() {
           />
 
           {error && (
-            <p role="alert" className="text-sm text-accent">
+            <p role="alert" className="text-sm text-danger">
               {error}
             </p>
           )}
 
-          <Button type="submit" disabled={submitting}>
+          <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? 'Aguarde...' : tab === 'signin' ? 'Entrar' : 'Criar conta'}
           </Button>
         </form>

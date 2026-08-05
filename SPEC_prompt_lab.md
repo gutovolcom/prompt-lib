@@ -317,7 +317,9 @@ create policy "update_own_profile" on public.profiles for update to authenticate
 
 ## 7. UI / Design system
 
-**Tema escuro por padrão** (estilo Magnific):
+> ⚠️ **Superseded**: o design system atual do app é o tema claro estilo Dribbble descrito em [DESIGN.md](./DESIGN.md) (decisão de 2026-08-03). A seção abaixo é registro histórico da versão inicial (tema escuro).
+
+**Tema escuro por padrão** (estilo Magnific) — versão histórica, não reflete o app atual:
 
 ```
 --bg:            #0E0E11   (fundo geral)

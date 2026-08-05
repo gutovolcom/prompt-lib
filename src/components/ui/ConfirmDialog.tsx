@@ -1,3 +1,4 @@
+import { AnimatedModal } from './AnimatedModal'
 import { Button } from './Button'
 
 interface ConfirmDialogProps {
@@ -19,28 +20,25 @@ export function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  if (!open) return null
-
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+    <AnimatedModal
+      open={open}
       role="alertdialog"
-      aria-modal="true"
-      aria-label={title}
+      ariaLabel={title}
+      overlayClassName="fixed inset-0 z-50 flex items-center justify-center p-4"
+      panelClassName="w-full max-w-sm rounded-card border border-border bg-surface p-6 shadow-lg"
+      onBackdropClick={loading ? undefined : onCancel}
     >
-      <div className="absolute inset-0 bg-black/70" onClick={loading ? undefined : onCancel} />
-      <div className="relative z-10 w-full max-w-sm rounded-card border border-border bg-surface p-6">
-        <h3 className="text-base font-semibold">{title}</h3>
-        <p className="mt-2 text-sm text-text-muted">{description}</p>
-        <div className="mt-5 flex justify-end gap-2">
-          <Button type="button" variant="secondary" disabled={loading} onClick={onCancel}>
-            Cancelar
-          </Button>
-          <Button type="button" disabled={loading} onClick={onConfirm}>
-            {loading ? 'Excluindo...' : confirmLabel}
-          </Button>
-        </div>
+      <h3 className="font-display text-lg font-bold tracking-tight">{title}</h3>
+      <p className="mt-2 text-sm text-text-2">{description}</p>
+      <div className="mt-5 flex justify-end gap-2">
+        <Button type="button" variant="ghost" disabled={loading} onClick={onCancel}>
+          Cancelar
+        </Button>
+        <Button type="button" variant="danger" disabled={loading} onClick={onConfirm}>
+          {loading ? 'Excluindo...' : confirmLabel}
+        </Button>
       </div>
-    </div>
+    </AnimatedModal>
   )
 }

@@ -57,12 +57,14 @@ export function ImageDropzone({
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
         className={`flex cursor-pointer flex-col items-center justify-center gap-2 rounded-card border-2 border-dashed px-6 py-10 text-center transition duration-150 ${
-          dragOver ? 'border-accent bg-surface-2' : 'border-border bg-surface-2/50 hover:bg-surface-2'
+          dragOver
+            ? 'border-accent bg-accent-soft'
+            : 'border-border bg-surface-2/50 hover:bg-surface-2'
         }`}
       >
-        <Upload size={28} aria-hidden className="text-text-muted" />
-        <p className="text-sm font-medium">Arraste imagens aqui ou clique para escolher</p>
-        <p className="text-xs text-text-muted">
+        <Upload size={28} aria-hidden className="text-text-2" />
+        <p className="text-sm font-medium text-text">Arraste imagens aqui ou clique para escolher</p>
+        <p className="text-xs text-text-2">
           PNG, JPG ou WebP · máx. {MAX_IMAGES} imagens · acima de 15MB são convertidas para WebP
           automaticamente
         </p>
@@ -109,7 +111,7 @@ export function ImageDropzone({
                   className="aspect-square w-full object-cover"
                 />
                 {isCover && (
-                  <span className="absolute left-1.5 top-1.5 rounded-pill bg-accent px-2 py-0.5 text-[10px] font-semibold text-white">
+                  <span className="absolute left-1.5 top-1.5 rounded-input bg-accent px-2 py-0.5 text-[10px] font-semibold text-white">
                     Capa
                   </span>
                 )}
@@ -120,7 +122,7 @@ export function ImageDropzone({
                       title="Definir como capa"
                       aria-label={`Definir ${image.file.name} como capa`}
                       onClick={() => onSelectCover(image.id)}
-                      className="rounded-pill bg-black/60 p-1.5 text-white hover:bg-black/80"
+                      className="rounded-input bg-black/60 p-1.5 text-white hover:bg-black/80"
                     >
                       <Star size={13} aria-hidden />
                     </button>
@@ -130,7 +132,7 @@ export function ImageDropzone({
                     title="Remover"
                     aria-label={`Remover ${image.file.name}`}
                     onClick={() => onRemove(image.id)}
-                    className="rounded-pill bg-black/60 p-1.5 text-white hover:bg-black/80"
+                    className="rounded-input bg-black/60 p-1.5 text-white hover:bg-black/80"
                   >
                     <Trash2 size={13} aria-hidden />
                   </button>

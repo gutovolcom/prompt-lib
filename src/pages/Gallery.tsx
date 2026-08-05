@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { HeartOff, ImagePlus, SearchX } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
 import type { AppOutletContext } from '../App'
 import { usePromptsInfinite } from '../hooks/usePrompts'
 import { useFilters } from '../hooks/useFilters'
+import { gsap, prefersReducedMotion } from '../lib/gsap'
 import { FilterBar } from '../components/layout/FilterBar'
 import { PromptGrid } from '../components/gallery/PromptGrid'
 import { PromptGridSkeleton } from '../components/gallery/PromptGridSkeleton'
@@ -25,6 +27,12 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
 
   const { data, isLoading, isError, fetchNextPage, hasNextPage, isFetchingNextPage } =
     usePromptsInfinite(effectiveFilters)
+
+  const heroRef = useRef<HTMLDivElement>(null)
+  useGSAP(() => {
+    if (prefersReducedMotion()) return
+    gsap.from(heroRef.current, { opacity: 0, y: 16, duration: 0.4, ease: 'power1.out' })
+  }, [])
 
   // Infinite scroll: sentinela observada dispara a próxima página.
   const sentinelRef = useRef<HTMLDivElement>(null)
@@ -52,20 +60,30 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
     effectiveFilters.authorId !== null ||
     filters.favoritesOnly
 
+  // Destaque da semana: o prompt mais copiado da primeira página, só na
+  // vista padrão (sem busca/filtros) — vira a pasta confidencial do grid.
+  // Restrito à 1ª página para não "pular" de card enquanto rola o infinite scroll.
+  const firstPage = data?.pages[0] ?? []
+  const [firstOfPage] = firstPage
+  const featuredId =
+    !searching && !hasActiveFilters && !favoritesOnly && firstOfPage
+      ? firstPage.reduce((top, p) => (p.copy_count > top.copy_count ? p : top), firstOfPage).id
+      : null
+
   function renderEmptyState() {
     if (searching) {
       return (
         <EmptyState icon={<SearchX size={40} aria-hidden className="text-text-muted" />}>
-          <h2 className="text-lg font-semibold">Nenhum prompt encontrado</h2>
-          <p className="text-sm text-text-muted">Tente outros termos.</p>
+          <h2 className="text-xl font-bold">Nenhum prompt encontrado</h2>
+          <p className="text-sm text-text-2">Tente outros termos.</p>
         </EmptyState>
       )
     }
     if (favoritesOnly || filters.favoritesOnly) {
       return (
         <EmptyState icon={<HeartOff size={40} aria-hidden className="text-text-muted" />}>
-          <h2 className="text-lg font-semibold">Nenhum favorito ainda</h2>
-          <p className="text-sm text-text-muted">
+          <h2 className="text-xl font-bold">Nenhum favorito ainda</h2>
+          <p className="text-sm text-text-2">
             Passe o mouse sobre um card e clique no coração para salvar aqui.
           </p>
         </EmptyState>
@@ -74,15 +92,15 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
     if (hasActiveFilters) {
       return (
         <EmptyState icon={<SearchX size={40} aria-hidden className="text-text-muted" />}>
-          <h2 className="text-lg font-semibold">Nenhum prompt com esses filtros</h2>
-          <p className="text-sm text-text-muted">Ajuste ou limpe os filtros para ver mais.</p>
+          <h2 className="text-xl font-bold">Nenhum prompt com esses filtros</h2>
+          <p className="text-sm text-text-2">Ajuste ou limpe os filtros para ver mais.</p>
         </EmptyState>
       )
     }
     return (
       <EmptyState icon={<ImagePlus size={40} aria-hidden className="text-text-muted" />}>
-        <h2 className="text-lg font-semibold">Nenhum prompt por aqui ainda</h2>
-        <p className="max-w-sm text-sm text-text-muted">
+        <h2 className="text-xl font-bold">Nenhum prompt por aqui ainda</h2>
+        <p className="max-w-sm text-sm text-text-2">
           A biblioteca está vazia. Compartilhe o primeiro prompt de imagem que deu certo para o
           time reutilizar.
         </p>
@@ -94,13 +112,34 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
   }
 
   return (
-    <main className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-4">
+    <main className="mx-auto flex max-w-[1360px] flex-col gap-6 px-6 pb-16 pt-10">
+      <div ref={heroRef} className="relative text-center">
+        {!favoritesOnly && (
+          <div className="mx-auto max-w-2xl">
+            <span className="mb-5 inline-block border-y border-text-muted px-1 font-mono text-xs uppercase tracking-[0.32em] text-text-2">
+              gabinete interno · marketing gran cursos
+            </span>
+            <h1 className="font-display text-[clamp(2.5rem,5.6vw,3.75rem)] font-bold leading-[1.02] tracking-tight">
+              Todo prompt que funcionou,
+              <br />
+              <em className="font-medium italic text-text-2">devidamente arquivado.</em>
+            </h1>
+            <p className="mt-4 text-base text-text-2 sm:text-lg">
+              Abra uma pasta, copie a fórmula, gere de novo.
+            </p>
+          </div>
+        )}
+        {favoritesOnly && (
+          <h1 className="font-display text-4xl font-bold tracking-tight">Favoritos</h1>
+        )}
+      </div>
+
       <FilterBar hideFavoritesPill={favoritesOnly} />
 
       {isLoading && <PromptGridSkeleton />}
 
       {isError && (
-        <p className="py-12 text-center text-sm text-text-muted">
+        <p className="py-12 text-center text-sm text-text-2">
           Erro ao carregar os prompts. Recarregue a página.
         </p>
       )}
@@ -109,10 +148,10 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
 
       {prompts.length > 0 && (
         <>
-          <PromptGrid prompts={prompts} />
+          <PromptGrid prompts={prompts} featuredId={featuredId} />
           <div ref={sentinelRef} aria-hidden />
           {isFetchingNextPage && (
-            <p className="py-4 text-center text-sm text-text-muted">Carregando mais...</p>
+            <p className="py-4 text-center text-sm text-text-2">Carregando mais...</p>
           )}
         </>
       )}
@@ -122,7 +161,7 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
 
 function EmptyState({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-4 rounded-card border border-dashed border-border bg-surface px-8 py-20 text-center">
+    <div className="flex flex-col items-center gap-4 rounded-card border border-dashed border-border bg-surface-2/50 px-8 py-24 text-center">
       {icon}
       {children}
     </div>

@@ -10,6 +10,7 @@ import { PromptDetailModal } from './components/prompt/PromptDetailModal'
 import { Login } from './pages/Login'
 import { Gallery } from './pages/Gallery'
 import { Favorites } from './pages/Favorites'
+import { Categories } from './pages/Categories'
 import { Profile } from './pages/Profile'
 
 const queryClient = new QueryClient()
@@ -26,7 +27,7 @@ function ProtectedLayout() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center text-sm text-text-muted">
+      <div className="flex min-h-screen items-center justify-center text-sm text-text-2">
         Carregando...
       </div>
     )
@@ -41,6 +42,9 @@ function ProtectedLayout() {
       <Header onNewPrompt={() => setUploadOpen(true)} />
       <Outlet context={{ openUpload: () => setUploadOpen(true) } satisfies AppOutletContext} />
       <UploadModal open={uploadOpen} onClose={() => setUploadOpen(false)} />
+      {/* Sempre montado (como o UploadModal): deriva visibilidade da rota
+          via useMatch para poder animar a saída antes de desmontar. */}
+      <PromptDetailModal />
     </FiltersProvider>
   )
 }
@@ -55,17 +59,11 @@ export default function App() {
               <Route path="/login" element={<Login />} />
               <Route element={<ProtectedLayout />}>
                 <Route path="/" element={<Gallery />} />
-                {/* Modal de detalhe deep-linkável por cima da galeria */}
-                <Route
-                  path="/p/:id"
-                  element={
-                    <>
-                      <Gallery />
-                      <PromptDetailModal />
-                    </>
-                  }
-                />
+                {/* Modal de detalhe deep-linkável: PromptDetailModal é montado
+                    globalmente em ProtectedLayout e reage à rota via useMatch. */}
+                <Route path="/p/:id" element={<Gallery />} />
                 <Route path="/favoritos" element={<Favorites />} />
+                <Route path="/categorias" element={<Categories />} />
                 <Route path="/perfil/:id" element={<Profile />} />
               </Route>
               <Route path="*" element={<Navigate to="/" replace />} />

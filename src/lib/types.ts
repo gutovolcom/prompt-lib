@@ -29,6 +29,8 @@ export interface Prompt {
   params: Record<string, unknown>
   tags: string[]
   copy_count: number
+  /** Número de catálogo sequencial (0003_catalog_number.sql) — exibido como "PL-0042". */
+  catalog_number: number
   created_at: string
   updated_at: string
 }

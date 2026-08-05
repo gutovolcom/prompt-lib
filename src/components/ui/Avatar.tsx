@@ -28,7 +28,7 @@ export function Avatar({ name, avatarUrl, size = 32 }: AvatarProps) {
   return (
     <div
       aria-label={`Avatar de ${name}`}
-      className="flex items-center justify-center rounded-full bg-accent-2 text-xs font-semibold text-text"
+      className="flex items-center justify-center rounded-full bg-surface-3 text-xs font-semibold text-text-2 ring-1 ring-border"
       style={{ width: size, height: size }}
     >
       {initials || '?'}

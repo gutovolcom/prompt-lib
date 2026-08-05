@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
 import { useFilters } from '../../hooks/useFilters'
 
-// Busca central do header (seção 6.2): debounce de 300ms antes de aplicar.
+// Busca do header (seção 6.2): debounce de 300ms antes de aplicar.
+// Vidro translúcido sobre o gaveteiro grafite — não é uma pill de app comum.
 export function SearchBar() {
   const { filters, patchFilters } = useFilters()
   const [value, setValue] = useState(filters.search)
@@ -15,19 +16,15 @@ export function SearchBar() {
   }, [value, patchFilters])
 
   return (
-    <div className="relative flex-1">
-      <Search
-        size={16}
-        aria-hidden
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-      />
+    <div className="relative flex items-center gap-2.5 rounded-input border border-surface/30 bg-surface/10 px-3.5 py-2.5 transition duration-200 focus-within:bg-surface/20 hover:bg-surface/20">
+      <Search size={15} className="shrink-0 text-surface/70" aria-hidden />
       <input
         type="search"
         value={value}
         onChange={(event) => setValue(event.target.value)}
-        placeholder="Buscar prompts..."
+        placeholder="consultar o arquivo…"
         aria-label="Buscar prompts"
-        className="w-full rounded-input border border-border bg-surface-2 py-2 pl-9 pr-3 text-sm text-text placeholder:text-text-muted focus:border-accent focus:outline-none"
+        className="w-full bg-transparent font-mono text-[13px] text-surface placeholder:text-surface/60 focus:outline-none"
       />
     </div>
   )
