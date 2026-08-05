@@ -36,6 +36,15 @@ export function PromptDetailModal() {
     if (match?.params.id) setDisplayId(match.params.id)
   }, [match?.params.id])
 
+  // Trava o scroll do body enquanto o modal está aberto (mesmo padrão do UploadModal).
+  useEffect(() => {
+    if (!open) return
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
   const { data: prompt, isLoading, isError } = usePrompt(displayId)
   const { showToast } = useToast()
   const { user } = useAuth()
@@ -140,7 +149,7 @@ export function PromptDetailModal() {
           {prompt && (
             <>
               {/* Página esquerda: a foto presa com clipe + ficha de tiragem */}
-              <div className="flex flex-col items-center gap-4 p-8 md:p-9">
+              <div className="flex flex-col items-center gap-4 p-8 md:min-h-0 md:overflow-y-auto md:p-9">
                 <figure className="relative w-full rotate-[-1deg] bg-surface p-2.5 pb-3.5 shadow-md">
                   <Paperclip
                     aria-hidden
@@ -185,7 +194,7 @@ export function PromptDetailModal() {
               </div>
 
               {/* Página direita: ficha datilografada */}
-              <div className="flex flex-col gap-4 border-t border-border p-8 md:border-l-0 md:border-t-0 md:p-9">
+              <div className="flex flex-col gap-4 border-t border-border p-8 md:min-h-0 md:overflow-y-auto md:border-l-0 md:border-t-0 md:p-9">
                 <div className="flex items-center justify-between border-b-2 border-text pb-2.5 font-mono text-[11px] tracking-[0.1em] text-text-2">
                   <span>FICHA · {code}</span>
                   <span className="hidden sm:inline">
