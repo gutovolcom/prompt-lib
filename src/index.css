@@ -2,40 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Design system — tema claro estilo Dribbble — ver DESIGN.md */
+/* Design system — identidade "O Arquivo" (gabinete de arquivo do marketing) — ver DESIGN.md */
 :root {
-  /* Fundo e superfícies */
-  --bg: #ffffff;
-  --surface: #ffffff; /* header, cards, modais */
-  --surface-2: #f4f5f7; /* pill de busca, inputs, tab ativa, hover */
-  --surface-3: #eceef1; /* hover de surface-2, pressed */
-  --border: #d6d7db; /* contraste ~1.7:1 no branco — visível o bastante para bordas funcionais */
-  /* Texto */
-  --text: #0d0c22; /* títulos e corpo forte */
-  --text-2: #6e6d7a; /* corpo secundário — contraste 4.9:1 no branco */
-  --text-muted: #9e9ea7; /* só placeholders/ícones decorativos — nunca texto essencial */
-  /* Marca */
-  --accent: #dd303e; /* vermelho GCO — CTAs, pills ativas, coração favoritado */
-  --accent-hover: #c62835;
-  --accent-soft: #fdeaec;
-  --accent-2: #0d134c; /* navy GCO — detalhes secundários */
+  /* Papel (fundo e superfícies) */
+  --bg: #ede5d4; /* mesa/papel de fundo */
+  --surface: #f8f3e6; /* fichas, modais, etiquetas */
+  --surface-2: #efe8d4; /* inputs, hover em papel */
+  --surface-3: #e7dec7; /* pressed */
+  --border: #cfc5ac; /* bordas em tom de papel */
+  --paper-line: #c9d4dc; /* pauta azul de ficha de biblioteca */
+  /* Tinta (texto datilografado) */
+  --text: #2a2620; /* tinta de máquina — títulos e corpo forte */
+  --text-2: #6e6553; /* tinta suave — corpo secundário */
+  --text-muted: #9b9077; /* só placeholders/ícones decorativos */
+  /* Carimbo (ação principal, favoritos, destrutivo) */
+  --accent: #be3a2b; /* vermelho de carimbo */
+  --accent-hover: #a93225;
+  --accent-deep: #8e2a1f; /* borda inferior de botões-carimbo */
+  --accent-soft: #f6e3de;
+  --accent-2: #35597e; /* azul-tinteiro — etiquetas/links secundários discretos */
+  /* Gaveteiro (header, avatares) */
+  --cabinet: #3b372f; /* grafite quente neutro */
+  --cabinet-dark: #2a2721;
+  /* Pasta manila (cards) */
+  --manila: #e9cd8f;
+  --manila-dark: #dbb96e; /* abas, verso da pasta */
+  --manila-deep: #c6a254; /* borda inferior de botões manila */
+  /* Pasta confidencial (destaque da semana) */
+  --secret: #38332b;
+  --secret-dark: #2b2721;
+  --secret-text: #efe7d2;
+  --secret-red: #c13425;
   /* Funcionais */
   --success: #15803d;
-  --success-soft: #ecfdf3;
-  --danger: #b91c1c;
-  --danger-soft: #fef2f2;
-  /* Elevação — sombra só em elevação, nunca em repouso */
-  --shadow-sm: 0 1px 2px rgba(13, 12, 34, 0.06);
-  --shadow-md: 0 4px 16px rgba(13, 12, 34, 0.1);
-  --shadow-lg: 0 16px 48px rgba(13, 12, 34, 0.18);
-  --overlay: rgba(13, 12, 34, 0.55);
+  --success-soft: #e8efdf;
+  --danger: #b12a1c;
+  --danger-soft: #f5e1db;
+  /* Elevação — sombras de papel */
+  --shadow-sm: 0 1px 2px rgba(52, 42, 21, 0.1);
+  --shadow-md: 0 2px 3px rgba(52, 42, 21, 0.14), 0 10px 24px rgba(52, 42, 21, 0.13);
+  --shadow-lg: 0 30px 80px rgba(20, 16, 8, 0.45);
+  --shadow-hard: 4px 4px 0 rgba(42, 38, 32, 0.25); /* etiquetas/toasts */
+  --overlay: rgba(32, 27, 18, 0.62);
   /* Motion */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
   body {
     @apply bg-bg text-text font-sans antialiased;
+  }
+
+  /* Grão de papel sutil sobre a página inteira (multiplicado, não interativo).
+     z-index 1 fica acima de fundos estáticos e abaixo de modais/toasts. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.05;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
   /* Acessibilidade: foco visível em todo elemento interativo */
@@ -54,7 +82,7 @@
     }
   }
 
-  /* Esconde a scrollbar em trilhos horizontais (tabs de categoria etc.)
+  /* Esconde a scrollbar em trilhos horizontais (abas de seção etc.)
      sem remover a rolagem — o overflow continua funcionando via wheel/drag. */
   .no-scrollbar {
     scrollbar-width: none;
