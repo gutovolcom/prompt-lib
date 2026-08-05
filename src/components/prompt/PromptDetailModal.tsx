@@ -42,6 +42,7 @@ export function PromptDetailModal() {
   const deletePrompt = useDeletePrompt()
   const [editing, setEditing] = useState(false)
   const [confirmingDelete, setConfirmingDelete] = useState(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const isAuthor = Boolean(prompt && user && prompt.author_id === user.id)
 
@@ -78,12 +79,13 @@ export function PromptDetailModal() {
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      // Esc fecha o detalhe apenas se nenhum modal filho estiver aberto.
-      if (event.key === 'Escape' && !editing && !confirmingDelete) navigate('/')
+      // Esc fecha o detalhe apenas se nenhum modal filho (edição, confirmação
+      // ou lightbox de imagem) estiver aberto.
+      if (event.key === 'Escape' && !editing && !confirmingDelete && !lightboxOpen) navigate('/')
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [navigate, editing, confirmingDelete])
+  }, [navigate, editing, confirmingDelete, lightboxOpen])
 
   async function downloadOriginal(image: PromptImage) {
     try {
@@ -145,7 +147,11 @@ export function PromptDetailModal() {
                     size={26}
                     className="absolute -left-1 -top-3 -rotate-[25deg] text-text-muted"
                   />
-                  <ImageCarousel images={prompt.images} title={prompt.title} />
+                  <ImageCarousel
+                    images={prompt.images}
+                    title={prompt.title}
+                    onExpandChange={setLightboxOpen}
+                  />
                 </figure>
                 <span className="text-center font-mono text-[11px] tracking-[0.06em] text-text-2">
                   registro · {prompt.model.toLowerCase()}
