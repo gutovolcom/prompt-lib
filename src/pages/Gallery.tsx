@@ -60,6 +60,16 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
     effectiveFilters.authorId !== null ||
     filters.favoritesOnly
 
+  // Destaque da semana: o prompt mais copiado da primeira página, só na
+  // vista padrão (sem busca/filtros) — vira a pasta confidencial do grid.
+  // Restrito à 1ª página para não "pular" de card enquanto rola o infinite scroll.
+  const firstPage = data?.pages[0] ?? []
+  const [firstOfPage] = firstPage
+  const featuredId =
+    !searching && !hasActiveFilters && !favoritesOnly && firstOfPage
+      ? firstPage.reduce((top, p) => (p.copy_count > top.copy_count ? p : top), firstOfPage).id
+      : null
+
   function renderEmptyState() {
     if (searching) {
       return (
@@ -102,20 +112,25 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
   }
 
   return (
-    <main className="mx-auto flex max-w-[1440px] flex-col gap-8 px-6 pb-16 pt-10">
-      <div ref={heroRef}>
+    <main className="mx-auto flex max-w-[1360px] flex-col gap-6 px-6 pb-16 pt-10">
+      <div ref={heroRef} className="relative text-center">
         {!favoritesOnly && (
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
-              Biblioteca de prompts GCO
+          <div className="mx-auto max-w-2xl">
+            <span className="mb-5 inline-block border-y border-text-muted px-1 font-mono text-xs uppercase tracking-[0.32em] text-text-2">
+              gabinete interno · marketing gran cursos
+            </span>
+            <h1 className="font-display text-[clamp(2.5rem,5.6vw,3.75rem)] font-bold leading-[1.02] tracking-tight">
+              Todo prompt que funcionou,
+              <br />
+              <em className="font-medium italic text-text-2">devidamente arquivado.</em>
             </h1>
             <p className="mt-4 text-base text-text-2 sm:text-lg">
-              Prompts de imagem testados pelo time de marketing. Copie, adapte e crie.
+              Abra uma pasta, copie a fórmula, gere de novo.
             </p>
           </div>
         )}
         {favoritesOnly && (
-          <h1 className="text-center text-4xl font-extrabold tracking-tight">Favoritos</h1>
+          <h1 className="font-display text-4xl font-bold tracking-tight">Favoritos</h1>
         )}
       </div>
 
@@ -133,7 +148,7 @@ export function Gallery({ favoritesOnly = false }: GalleryProps) {
 
       {prompts.length > 0 && (
         <>
-          <PromptGrid prompts={prompts} />
+          <PromptGrid prompts={prompts} featuredId={featuredId} />
           <div ref={sentinelRef} aria-hidden />
           {isFetchingNextPage && (
             <p className="py-4 text-center text-sm text-text-2">Carregando mais...</p>

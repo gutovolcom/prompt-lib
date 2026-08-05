@@ -1,39 +1,45 @@
 import type { Config } from 'tailwindcss'
 
 // Design system — identidade "O Arquivo" — ver DESIGN.md.
-// As cores apontam para CSS vars definidas em src/index.css.
+// As cores apontam para CSS vars "R G B" definidas em src/index.css.
+// withOpacity permite usar modificadores de opacidade (ex.: bg-surface/50)
+// em cima dessas vars — ver https://tailwindcss.com/docs/customizing-colors#using-css-variables.
+function withOpacity(variable: string) {
+  return `rgb(var(${variable}) / <alpha-value>)`
+}
+
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        bg: 'var(--bg)',
-        surface: 'var(--surface)',
-        'surface-2': 'var(--surface-2)',
-        'surface-3': 'var(--surface-3)',
-        border: 'var(--border)',
-        'paper-line': 'var(--paper-line)',
-        text: 'var(--text)',
-        'text-2': 'var(--text-2)',
-        'text-muted': 'var(--text-muted)',
-        accent: 'var(--accent)',
-        'accent-hover': 'var(--accent-hover)',
-        'accent-deep': 'var(--accent-deep)',
-        'accent-soft': 'var(--accent-soft)',
-        'accent-2': 'var(--accent-2)',
-        cabinet: 'var(--cabinet)',
-        'cabinet-dark': 'var(--cabinet-dark)',
-        manila: 'var(--manila)',
-        'manila-dark': 'var(--manila-dark)',
-        'manila-deep': 'var(--manila-deep)',
-        secret: 'var(--secret)',
-        'secret-dark': 'var(--secret-dark)',
-        'secret-text': 'var(--secret-text)',
-        'secret-red': 'var(--secret-red)',
-        success: 'var(--success)',
-        'success-soft': 'var(--success-soft)',
-        danger: 'var(--danger)',
-        'danger-soft': 'var(--danger-soft)',
+        bg: withOpacity('--bg'),
+        surface: withOpacity('--surface'),
+        'surface-2': withOpacity('--surface-2'),
+        'surface-3': withOpacity('--surface-3'),
+        border: withOpacity('--border'),
+        'paper-line': withOpacity('--paper-line'),
+        text: withOpacity('--text'),
+        'text-2': withOpacity('--text-2'),
+        'text-muted': withOpacity('--text-muted'),
+        accent: withOpacity('--accent'),
+        'accent-hover': withOpacity('--accent-hover'),
+        'accent-deep': withOpacity('--accent-deep'),
+        'accent-soft': withOpacity('--accent-soft'),
+        'accent-2': withOpacity('--accent-2'),
+        cabinet: withOpacity('--cabinet'),
+        'cabinet-dark': withOpacity('--cabinet-dark'),
+        manila: withOpacity('--manila'),
+        'manila-dark': withOpacity('--manila-dark'),
+        'manila-deep': withOpacity('--manila-deep'),
+        secret: withOpacity('--secret'),
+        'secret-dark': withOpacity('--secret-dark'),
+        'secret-text': withOpacity('--secret-text'),
+        'secret-red': withOpacity('--secret-red'),
+        success: withOpacity('--success'),
+        'success-soft': withOpacity('--success-soft'),
+        danger: withOpacity('--danger'),
+        'danger-soft': withOpacity('--danger-soft'),
       },
       fontFamily: {
         sans: ['Archivo', 'system-ui', 'sans-serif'],

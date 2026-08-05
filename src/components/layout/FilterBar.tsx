@@ -64,8 +64,8 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
   )
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-3">
+    <div className="flex flex-col gap-0">
+      <div className="flex items-end gap-1.5 border-b-2 border-text pb-0">
         <div className="min-w-0 flex-1 overflow-hidden">
           <CategoryPills hideFavoritesPill={hideFavoritesPill} />
         </div>
@@ -75,13 +75,14 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
           aria-expanded={filtersOpen}
           aria-label="Mais filtros"
           onClick={() => setFiltersOpen((open) => !open)}
-          className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-pill border border-border transition duration-150 ${
-            filtersOpen ? 'bg-surface-2 text-text' : 'bg-surface text-text-2 hover:text-text'
+          className={`relative mb-1.5 flex shrink-0 items-center gap-2 whitespace-nowrap rounded-input border-[1.5px] border-dashed px-3.5 py-[7px] font-mono text-xs uppercase tracking-[0.06em] transition duration-150 ${
+            filtersOpen ? 'border-text text-text' : 'border-text-muted text-text-2 hover:border-text hover:text-text'
           }`}
         >
-          <SlidersHorizontal size={16} aria-hidden />
+          <SlidersHorizontal size={14} aria-hidden />
+          Filtros
           {activeFilterCount > 0 && (
-            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-semibold text-white">
+            <span className="flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-semibold text-white">
               {activeFilterCount}
             </span>
           )}
@@ -89,8 +90,8 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
       </div>
 
       <div ref={panelRef} className="overflow-hidden" style={{ height: 0, opacity: 0 }}>
-        <div ref={panelContentRef} className="flex justify-center pt-1">
-          <div className="flex flex-wrap items-center justify-center gap-3 rounded-input bg-surface-2/60 p-3">
+        <div ref={panelContentRef} className="flex justify-center pt-4">
+          <div className="flex flex-wrap items-center justify-center gap-3 rounded-input border border-border bg-surface-2/60 p-3">
             <Select
               aria-label="Ordenação"
               value={filters.sort}

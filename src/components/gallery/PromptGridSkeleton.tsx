@@ -1,7 +1,8 @@
 // Skeletons de loading do grid: silhuetas de pasta (aba + corpo manila)
 // com shimmer em tons de papel, nas mesmas colunas do grid real.
 const shimmerStyle = {
-  backgroundImage: 'linear-gradient(90deg, var(--surface-2) 25%, var(--surface-3) 50%, var(--surface-2) 75%)',
+  backgroundImage:
+    'linear-gradient(90deg, rgb(var(--surface-2)) 25%, rgb(var(--surface-3)) 50%, rgb(var(--surface-2)) 75%)',
   backgroundSize: '200% 100%',
 }
 
