@@ -59,6 +59,9 @@
      o trilho praticamente invisível quando não há rolagem. */
   html {
     overflow-y: scroll;
+    /* Reserva o espaço da barra mesmo quando o overflow vira hidden
+       (lock de scroll dos modais — ver useScrollLock), sem deslocar a página. */
+    scrollbar-gutter: stable;
     scrollbar-color: rgb(var(--border)) rgb(var(--bg)); /* Firefox + Chrome novos */
   }
 

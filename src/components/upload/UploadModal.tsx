@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AlertCircle, CheckCircle2, Loader2, X } from 'lucide-react'
 import { MODEL_OPTIONS } from '../../lib/config'
 import { compressToWebp } from '../../lib/image'
 import { parseTags } from '../../lib/tags'
 import { useCategories } from '../../hooks/usePrompts'
+import { useScrollLock } from '../../hooks/useScrollLock'
 import { useUpload, type NewPromptData } from '../../hooks/useUpload'
 import { AnimatedModal } from '../ui/AnimatedModal'
 import { Button } from '../ui/Button'
@@ -56,14 +57,8 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
   const [formError, setFormError] = useState<string | null>(null)
   const [hadFailure, setHadFailure] = useState(false)
 
-  // Trava o scroll do body enquanto o modal está aberto.
-  useEffect(() => {
-    if (!open) return
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
+  // Trava o scroll da página enquanto o modal está aberto.
+  useScrollLock(open)
 
   function resetAll() {
     images.forEach((image) => URL.revokeObjectURL(image.previewUrl))

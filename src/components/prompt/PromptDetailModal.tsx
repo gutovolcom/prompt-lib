@@ -3,6 +3,7 @@ import { Link, useMatch, useNavigate } from 'react-router-dom'
 import { ChevronDown, Download, Heart, Pencil, Paperclip, Trash2, X } from 'lucide-react'
 import { useDeletePrompt, usePrompt } from '../../hooks/usePrompts'
 import { useAuth } from '../../hooks/useAuth'
+import { useScrollLock } from '../../hooks/useScrollLock'
 import { publicImageUrl } from '../../lib/storage'
 import { catalogCode } from '../../lib/catalog'
 import type { PromptImage } from '../../lib/types'
@@ -36,14 +37,7 @@ export function PromptDetailModal() {
     if (match?.params.id) setDisplayId(match.params.id)
   }, [match?.params.id])
 
-  // Trava o scroll do body enquanto o modal está aberto (mesmo padrão do UploadModal).
-  useEffect(() => {
-    if (!open) return
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [open])
+  useScrollLock(open)
 
   const { data: prompt, isLoading, isError } = usePrompt(displayId)
   const { showToast } = useToast()
@@ -121,7 +115,7 @@ export function PromptDetailModal() {
       <AnimatedModal
         open={open}
         ariaLabel={prompt?.title ?? 'Detalhe do prompt'}
-        panelClassName="relative grid max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-card border border-border bg-surface shadow-lg md:grid-cols-[1fr_1.15fr] md:overflow-hidden md:bg-[linear-gradient(to_right,transparent_49.7%,rgb(var(--text)/0.14)_50%,transparent_50.4%)]"
+        panelClassName="relative grid max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-card border border-border bg-surface shadow-lg md:grid-cols-[1fr_1.15fr] md:bg-[linear-gradient(to_right,transparent_49.7%,rgb(var(--text)/0.14)_50%,transparent_50.4%)]"
         onBackdropClick={() => navigate('/')}
       >
         <>
@@ -149,7 +143,7 @@ export function PromptDetailModal() {
           {prompt && (
             <>
               {/* Página esquerda: a foto presa com clipe + ficha de tiragem */}
-              <div className="flex flex-col items-center gap-4 p-8 md:min-h-0 md:overflow-y-auto md:p-9">
+              <div className="flex flex-col items-center gap-4 p-8 md:p-9">
                 <figure className="relative w-full rotate-[-1deg] bg-surface p-2.5 pb-3.5 shadow-md">
                   <Paperclip
                     aria-hidden
@@ -194,7 +188,7 @@ export function PromptDetailModal() {
               </div>
 
               {/* Página direita: ficha datilografada */}
-              <div className="flex flex-col gap-4 border-t border-border p-8 md:min-h-0 md:overflow-y-auto md:border-l-0 md:border-t-0 md:p-9">
+              <div className="flex flex-col gap-4 border-t border-border p-8 md:border-l-0 md:border-t-0 md:p-9">
                 <div className="flex items-center justify-between border-b-2 border-text pb-2.5 font-mono text-[11px] tracking-[0.1em] text-text-2">
                   <span>FICHA · {code}</span>
                   <span className="hidden sm:inline">
