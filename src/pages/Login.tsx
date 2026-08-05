@@ -49,7 +49,7 @@ export function Login() {
       <div className="w-full max-w-sm rounded-card border border-border bg-surface p-8 shadow-md">
         <img
           src={logoUrl}
-          alt="Prompt Lab — arquivo de fórmulas"
+          alt="promptlib — arquivo de fórmulas"
           className="mx-auto mb-6 h-12 w-auto"
         />
 

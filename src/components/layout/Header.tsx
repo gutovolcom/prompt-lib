@@ -31,8 +31,8 @@ export function Header({ onNewPrompt }: HeaderProps) {
   return (
     <header className="sticky top-0 z-10 border-b-[3px] border-cabinet-dark bg-gradient-to-b from-cabinet to-cabinet-dark shadow-[0_3px_14px_rgba(30,30,30,0.3)]">
       <div className="mx-auto flex h-[66px] max-w-[1360px] items-center gap-5 px-6">
-        <Link to="/" className="flex shrink-0 items-center" aria-label="Prompt Lab — página inicial">
-          <img src={logoUrl} alt="Prompt Lab — arquivo de fórmulas" className="h-8 w-auto sm:h-9" />
+        <Link to="/" className="flex shrink-0 items-center" aria-label="promptlib — página inicial">
+          <img src={logoUrl} alt="promptlib — arquivo de fórmulas" className="h-8 w-auto sm:h-9" />
         </Link>
 
         <div className="mx-auto hidden w-full max-w-md sm:block">

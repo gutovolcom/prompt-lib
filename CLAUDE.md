@@ -1,4 +1,4 @@
-# Prompt Lab · GCO
+# promptlib (ex-Prompt Lab · GCO)
 
 **Fonte da verdade: [SPEC_prompt_lab.md](./SPEC_prompt_lab.md).** Toda decisão de schema, RLS, rotas, componentes, design e regras de negócio está lá — não invente requisitos.
 

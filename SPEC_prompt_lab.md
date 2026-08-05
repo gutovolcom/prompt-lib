@@ -276,7 +276,7 @@ create policy "update_own_profile" on public.profiles for update to authenticate
 ## 6. Páginas e fluxos
 
 ### 6.1 `/login`
-- Card centralizado, tema escuro, logo "Prompt Lab · GCO".
+- Card centralizado, tema escuro, logo "promptlib".
 - Tabs: Entrar / Criar conta. Campos mínimos (nome só no signup).
 - Mensagens de erro em pt-BR amigáveis (mapear erros do Supabase).
 
