@@ -4,7 +4,7 @@ import { useGSAP } from '@gsap/react'
 import { useAuthors, useModels } from '../../hooks/usePrompts'
 import { useFilters, type SortOption } from '../../hooks/useFilters'
 import { gsap, prefersReducedMotion } from '../../lib/gsap'
-import { Select } from '../ui/Select'
+import { Dropdown } from '../ui/Dropdown'
 import { CategoryPills, TAB_ACTIVE, TAB_BASE, TAB_INACTIVE } from './CategoryPills'
 
 const SORT_LABELS: Record<SortOption, string> = {
@@ -39,7 +39,11 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
       if (!el || !content) return
 
       if (prefersReducedMotion()) {
-        gsap.set(el, { height: filtersOpen ? 'auto' : 0, opacity: filtersOpen ? 1 : 0 })
+        gsap.set(el, {
+          height: filtersOpen ? 'auto' : 0,
+          opacity: filtersOpen ? 1 : 0,
+          overflow: filtersOpen ? 'visible' : 'hidden',
+        })
         return
       }
 
@@ -52,11 +56,12 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
             opacity: 1,
             duration: 0.25,
             ease: 'power2.out',
-            onComplete: () => gsap.set(el, { height: 'auto' }),
+            // overflow visível para os menus dos dropdowns não serem cortados
+            onComplete: () => gsap.set(el, { height: 'auto', overflow: 'visible' }),
           },
         )
       } else {
-        gsap.set(el, { height: el.offsetHeight })
+        gsap.set(el, { overflow: 'hidden', height: el.offsetHeight })
         gsap.to(el, { height: 0, opacity: 0, duration: 0.2, ease: 'power2.in' })
       }
     },
@@ -109,43 +114,35 @@ export function FilterBar({ hideFavoritesPill = false }: FilterBarProps) {
       <div ref={panelRef} className="overflow-hidden" style={{ height: 0, opacity: 0 }}>
         <div ref={panelContentRef} className="flex justify-center pt-4">
           <div className="flex flex-wrap items-center justify-center gap-3 rounded-input border border-border bg-surface-2/60 p-3">
-            <Select
+            <Dropdown
               aria-label="Ordenação"
               value={filters.sort}
-              onChange={(e) => patchFilters({ sort: e.target.value as SortOption })}
-            >
-              {(Object.keys(SORT_LABELS) as SortOption[]).map((option) => (
-                <option key={option} value={option}>
-                  {SORT_LABELS[option]}
-                </option>
-              ))}
-            </Select>
+              options={(Object.keys(SORT_LABELS) as SortOption[]).map((option) => ({
+                value: option,
+                label: SORT_LABELS[option],
+              }))}
+              onChange={(value) => patchFilters({ sort: value as SortOption })}
+            />
 
-            <Select
+            <Dropdown
               aria-label="Filtrar por modelo"
               value={filters.model ?? ''}
-              onChange={(e) => patchFilters({ model: e.target.value || null })}
-            >
-              <option value="">Modelo: todos</option>
-              {(models ?? []).map((model) => (
-                <option key={model} value={model}>
-                  {model}
-                </option>
-              ))}
-            </Select>
+              options={[
+                { value: '', label: 'Modelo: todos' },
+                ...(models ?? []).map((model) => ({ value: model, label: model })),
+              ]}
+              onChange={(value) => patchFilters({ model: value || null })}
+            />
 
-            <Select
+            <Dropdown
               aria-label="Filtrar por autor"
               value={filters.authorId ?? ''}
-              onChange={(e) => patchFilters({ authorId: e.target.value || null })}
-            >
-              <option value="">Autor: todos</option>
-              {(authors ?? []).map((author) => (
-                <option key={author.id} value={author.id}>
-                  {author.name}
-                </option>
-              ))}
-            </Select>
+              options={[
+                { value: '', label: 'Autor: todos' },
+                ...(authors ?? []).map((author) => ({ value: author.id, label: author.name })),
+              ]}
+              onChange={(value) => patchFilters({ authorId: value || null })}
+            />
           </div>
         </div>
       </div>
