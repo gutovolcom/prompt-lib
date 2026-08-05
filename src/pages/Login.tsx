@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { ALLOWED_DOMAINS } from '../lib/config'
 import { Button } from '../components/ui/Button'
 import { Input } from '../components/ui/Input'
+import logoUrl from '../assets/logo-prompt-lib-login.svg'
 
 type Tab = 'signin' | 'signup'
 
@@ -46,12 +47,11 @@ export function Login() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg px-4">
       <div className="w-full max-w-sm rounded-card border border-border bg-surface p-8 shadow-md">
-        <div className="mx-auto mb-6 w-fit rounded-input border-2 border-cabinet-dark bg-surface px-4 py-1.5 font-mono text-sm font-bold uppercase tracking-[0.14em] text-text shadow-[inset_0_0_0_2px_rgba(198,162,84,0.5)]">
-          Prompt Lab
-          <small className="block text-center text-[8.5px] font-normal normal-case tracking-[0.3em] text-text-2">
-            arquivo de fórmulas · GCO
-          </small>
-        </div>
+        <img
+          src={logoUrl}
+          alt="Prompt Lab — arquivo de fórmulas"
+          className="mx-auto mb-6 h-12 w-auto"
+        />
 
         <div role="tablist" className="mb-6 flex items-end gap-1 border-b-2 border-text">
           <button
