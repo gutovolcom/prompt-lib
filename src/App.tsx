@@ -10,6 +10,7 @@ import { PromptDetailModal } from './components/prompt/PromptDetailModal'
 import { Login } from './pages/Login'
 import { Gallery } from './pages/Gallery'
 import { Favorites } from './pages/Favorites'
+import { Categories } from './pages/Categories'
 import { Profile } from './pages/Profile'
 
 const queryClient = new QueryClient()
@@ -62,6 +63,7 @@ export default function App() {
                     globalmente em ProtectedLayout e reage à rota via useMatch. */}
                 <Route path="/p/:id" element={<Gallery />} />
                 <Route path="/favoritos" element={<Favorites />} />
+                <Route path="/categorias" element={<Categories />} />
                 <Route path="/perfil/:id" element={<Profile />} />
               </Route>
               <Route path="*" element={<Navigate to="/" replace />} />

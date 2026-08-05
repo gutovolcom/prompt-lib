@@ -124,6 +124,40 @@ export function useCategories() {
   })
 }
 
+export interface CategoryWithCount extends Category {
+  /** Embed de contagem do supabase-js: quantas fichas na seção. */
+  prompt_categories: { count: number }[]
+}
+
+// Índice do arquivo (/categorias): categorias com contagem de prompts.
+export function useCategoriesWithCount() {
+  return useQuery({
+    queryKey: ['categories', 'with-count'],
+    queryFn: async (): Promise<CategoryWithCount[]> => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('*, prompt_categories(count)')
+        .order('sort_order', { ascending: true })
+      if (error) throw new Error(error.message)
+      return data as CategoryWithCount[]
+    },
+  })
+}
+
+// Total de prompts no arquivo (gaveta "Todos" do índice).
+export function usePromptCount() {
+  return useQuery({
+    queryKey: ['prompts', 'count'],
+    queryFn: async (): Promise<number> => {
+      const { count, error } = await supabase
+        .from('prompts')
+        .select('*', { count: 'exact', head: true })
+      if (error) throw new Error(error.message)
+      return count ?? 0
+    },
+  })
+}
+
 export interface UpdatePromptInput {
   id: string
   title: string
