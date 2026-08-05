@@ -33,7 +33,7 @@ export function PromptCard({ prompt, variant = 'default' }: PromptCardProps) {
   const secret = variant === 'secret'
   const code = catalogCode(prompt.catalog_number)
   const tabPosition = TAB_POSITION[(prompt.catalog_number ?? 0) % 3]
-  const tilt = (prompt.catalog_number ?? 0) % 2 === 0 ? '-0.8deg' : '0.9deg'
+  const tilt = (prompt.catalog_number ?? 0) % 2 === 0 ? 'rotate-[-0.8deg]' : 'rotate-[0.9deg]'
 
   // Reveal suave ao entrar no viewport — funciona tanto no carregamento
   // inicial quanto para os cards que chegam via infinite scroll.
@@ -58,7 +58,7 @@ export function PromptCard({ prompt, variant = 'default' }: PromptCardProps) {
   return (
     <article
       ref={articleRef}
-      className={`group relative cursor-pointer ${secret ? 'sm:col-span-2' : ''}`}
+      className={`group relative cursor-pointer [perspective:900px] ${secret ? 'sm:col-span-2' : ''}`}
       onClick={() => navigate(`/p/${prompt.id}`)}
       onKeyDown={(event) => {
         if (event.key === 'Enter') navigate(`/p/${prompt.id}`)
@@ -84,9 +84,10 @@ export function PromptCard({ prompt, variant = 'default' }: PromptCardProps) {
           secret ? 'border-black/50 bg-secret-dark' : 'border-manila-deep/60 bg-manila-dark'
         }`}
       >
+        {/* Transform base em classes (não style inline): estilo inline vence as
+            variantes group-hover: e mataria a animação de "foto saindo da pasta". */}
         <div
-          className="relative z-[3] -mt-0.5 bg-white p-[7px] pb-[9px] shadow-sm transition-transform duration-300 group-hover:-translate-y-1.5 group-hover:rotate-0"
-          style={{ transform: `translateY(14px) rotate(${tilt})` }}
+          className={`relative z-[3] -mt-0.5 translate-y-[14px] bg-white p-[7px] pb-[9px] shadow-sm transition-transform duration-300 group-hover:-translate-y-1.5 group-hover:rotate-0 ${tilt}`}
         >
           {cover ? (
             <img
