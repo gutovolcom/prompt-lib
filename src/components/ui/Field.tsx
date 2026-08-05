@@ -10,7 +10,7 @@ interface FieldProps {
 export function Field({ label, hint, error, children }: FieldProps) {
   return (
     <div className="space-y-1.5">
-      <span className="text-sm font-medium text-text">{label}</span>
+      <span className="font-mono text-xs font-bold uppercase tracking-[0.06em] text-text-2">{label}</span>
       {children}
       {error ? (
         <p className="text-xs text-danger">{error}</p>

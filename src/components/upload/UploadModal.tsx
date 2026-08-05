@@ -218,12 +218,12 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
       open={open}
       onExited={resetAll}
       ariaLabel="Novo prompt"
-      panelClassName="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card bg-surface shadow-lg"
+      panelClassName="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card border border-border bg-surface shadow-lg"
       onBackdropClick={handleClose}
     >
       <>
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <h2 className="text-lg font-bold tracking-tight">
+          <h2 className="font-display text-lg font-bold tracking-tight">
             Novo prompt{' '}
             <span className="ml-2 text-xs font-normal text-text-2">
               Passo {step} de 2 · {step === 1 ? 'Imagens' : 'Detalhes'}
@@ -233,7 +233,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
             type="button"
             aria-label="Fechar"
             onClick={handleClose}
-            className="rounded-pill p-1.5 text-text-2 transition duration-150 hover:bg-surface-2 hover:text-text"
+            className="rounded-input p-1.5 text-text-2 transition duration-150 hover:bg-surface-2 hover:text-text"
           >
             <X size={16} aria-hidden />
           </button>
@@ -311,7 +311,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                       value={customModel}
                       onChange={(e) => setCustomModel(e.target.value)}
                       placeholder="Nome do modelo"
-                      className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                      className="flex-1 rounded-input border border-transparent bg-surface-2 px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                     />
                   )}
                 </div>
@@ -327,10 +327,10 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                         type="button"
                         aria-pressed={active}
                         onClick={() => toggleCategory(category.id)}
-                        className={`rounded-pill px-3 py-1.5 text-xs font-medium transition duration-150 ${
+                        className={`rounded-input border px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.04em] transition duration-150 ${
                           active
-                            ? 'text-white'
-                            : 'bg-surface-2 text-text-2 hover:text-text'
+                            ? 'border-transparent text-white'
+                            : 'border-border bg-surface-2 text-text-2 hover:border-text hover:text-text'
                         }`}
                         style={active ? { backgroundColor: category.color } : undefined}
                       >
@@ -342,11 +342,11 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
               </Field>
 
               <Field label="Tags">
-                <div className="flex flex-wrap items-center gap-1.5 rounded-pill bg-surface-2 px-3 py-2">
+                <div className="flex flex-wrap items-center gap-1.5 rounded-input bg-surface-2 px-3 py-2">
                   {tags.map((tag) => (
                     <span
                       key={tag}
-                      className="inline-flex items-center gap-1 rounded-pill bg-surface px-2 py-0.5 text-xs shadow-sm"
+                      className="inline-flex items-center gap-1 rounded-input bg-surface px-2 py-0.5 text-xs shadow-sm"
                     >
                       #{tag}
                       <button
@@ -389,7 +389,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                           )
                         }
                         placeholder="chave"
-                        className="w-1/3 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                        className="w-1/3 rounded-input border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                       />
                       <input
                         aria-label="Valor do parâmetro"
@@ -400,7 +400,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                           )
                         }
                         placeholder="valor"
-                        className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                        className="flex-1 rounded-input border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                       />
                       <button
                         type="button"
@@ -408,7 +408,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                         onClick={() =>
                           setParamRows((current) => current.filter((_, i) => i !== index))
                         }
-                        className="rounded-pill px-2 text-text-2 hover:text-text"
+                        className="rounded-input px-2 text-text-2 hover:text-text"
                       >
                         <X size={14} aria-hidden />
                       </button>
@@ -441,7 +441,7 @@ export function UploadModal({ open, onClose }: UploadModalProps) {
                           <Loader2 size={13} aria-hidden className="animate-spin text-text-2" />
                         )}
                         {status === 'pending' && (
-                          <span className="inline-block h-[13px] w-[13px] rounded-pill border border-border" />
+                          <span className="inline-block h-[13px] w-[13px] rounded-input border border-border" />
                         )}
                         <span className="truncate text-text-2">{image.file.name}</span>
                       </li>

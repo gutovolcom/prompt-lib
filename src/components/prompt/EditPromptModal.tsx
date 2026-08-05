@@ -121,17 +121,17 @@ export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps)
       open={open}
       ariaLabel={`Editar ${prompt.title}`}
       overlayClassName="fixed inset-0 z-50 flex items-center justify-center p-4"
-      panelClassName="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card bg-surface shadow-lg"
+      panelClassName="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-card border border-border bg-surface shadow-lg"
       onBackdropClick={onClose}
     >
       <>
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
-          <h2 className="text-lg font-bold tracking-tight">Editar prompt</h2>
+          <h2 className="font-display text-lg font-bold tracking-tight">Editar prompt</h2>
           <button
             type="button"
             aria-label="Fechar"
             onClick={onClose}
-            className="rounded-pill p-1.5 text-text-2 transition duration-150 hover:bg-surface-2 hover:text-text"
+            className="rounded-input p-1.5 text-text-2 transition duration-150 hover:bg-surface-2 hover:text-text"
           >
             <X size={16} aria-hidden />
           </button>
@@ -182,7 +182,7 @@ export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps)
                   value={customModel}
                   onChange={(e) => setCustomModel(e.target.value)}
                   placeholder="Nome do modelo"
-                  className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                  className="flex-1 rounded-input border border-transparent bg-surface-2 px-4 py-2.5 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                 />
               )}
             </div>
@@ -198,8 +198,10 @@ export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps)
                     type="button"
                     aria-pressed={active}
                     onClick={() => toggleCategory(category.id)}
-                    className={`rounded-pill px-3 py-1.5 text-xs font-medium transition duration-150 ${
-                      active ? 'text-white' : 'bg-surface-2 text-text-2 hover:text-text'
+                    className={`rounded-input border px-3 py-1.5 font-mono text-xs font-bold uppercase tracking-[0.04em] transition duration-150 ${
+                      active
+                        ? 'border-transparent text-white'
+                        : 'border-border bg-surface-2 text-text-2 hover:border-text hover:text-text'
                     }`}
                     style={active ? { backgroundColor: category.color } : undefined}
                   >
@@ -211,11 +213,11 @@ export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps)
           </Field>
 
           <Field label="Tags">
-            <div className="flex flex-wrap items-center gap-1.5 rounded-pill bg-surface-2 px-3 py-2">
+            <div className="flex flex-wrap items-center gap-1.5 rounded-input bg-surface-2 px-3 py-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 rounded-pill bg-surface px-2 py-0.5 text-xs shadow-sm"
+                  className="inline-flex items-center gap-1 rounded-input bg-surface px-2 py-0.5 text-xs shadow-sm"
                 >
                   #{tag}
                   <button
@@ -258,7 +260,7 @@ export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps)
                       )
                     }
                     placeholder="chave"
-                    className="w-1/3 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                    className="w-1/3 rounded-input border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                   />
                   <input
                     aria-label="Valor do parâmetro"
@@ -269,13 +271,13 @@ export function EditPromptModal({ prompt, open, onClose }: EditPromptModalProps)
                       )
                     }
                     placeholder="valor"
-                    className="flex-1 rounded-pill border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
+                    className="flex-1 rounded-input border border-transparent bg-surface-2 px-4 py-2 text-sm text-text placeholder:text-text-muted focus:border-accent focus:bg-surface focus:outline-none"
                   />
                   <button
                     type="button"
                     aria-label="Remover parâmetro"
                     onClick={() => setParamRows((current) => current.filter((_, i) => i !== index))}
-                    className="rounded-pill px-2 text-text-2 hover:text-text"
+                    className="rounded-input px-2 text-text-2 hover:text-text"
                   >
                     <X size={14} aria-hidden />
                   </button>

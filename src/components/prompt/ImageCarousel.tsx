@@ -48,7 +48,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
             type="button"
             aria-label="Imagem anterior"
             onClick={() => setIndex((i) => (i - 1 + images.length) % images.length)}
-            className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-pill bg-surface/90 text-text shadow-md transition duration-150 hover:bg-surface"
+            className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-input bg-surface/90 text-text shadow-md transition duration-150 hover:bg-surface"
           >
             <ChevronLeft size={18} aria-hidden />
           </button>
@@ -56,7 +56,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
             type="button"
             aria-label="Próxima imagem"
             onClick={() => setIndex((i) => (i + 1) % images.length)}
-            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-pill bg-surface/90 text-text shadow-md transition duration-150 hover:bg-surface"
+            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-input bg-surface/90 text-text shadow-md transition duration-150 hover:bg-surface"
           >
             <ChevronRight size={18} aria-hidden />
           </button>
@@ -67,7 +67,7 @@ export function ImageCarousel({ images, title }: ImageCarouselProps) {
                 type="button"
                 aria-label={`Ir para imagem ${i + 1}`}
                 onClick={() => setIndex(i)}
-                className={`h-1.5 w-1.5 rounded-pill transition duration-150 ${
+                className={`h-1.5 w-1.5 rounded-input transition duration-150 ${
                   i === index ? 'bg-text' : 'bg-text/30'
                 }`}
               />

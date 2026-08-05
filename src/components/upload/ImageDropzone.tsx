@@ -111,7 +111,7 @@ export function ImageDropzone({
                   className="aspect-square w-full object-cover"
                 />
                 {isCover && (
-                  <span className="absolute left-1.5 top-1.5 rounded-pill bg-accent px-2 py-0.5 text-[10px] font-semibold text-white">
+                  <span className="absolute left-1.5 top-1.5 rounded-input bg-accent px-2 py-0.5 text-[10px] font-semibold text-white">
                     Capa
                   </span>
                 )}
@@ -122,7 +122,7 @@ export function ImageDropzone({
                       title="Definir como capa"
                       aria-label={`Definir ${image.file.name} como capa`}
                       onClick={() => onSelectCover(image.id)}
-                      className="rounded-pill bg-black/60 p-1.5 text-white hover:bg-black/80"
+                      className="rounded-input bg-black/60 p-1.5 text-white hover:bg-black/80"
                     >
                       <Star size={13} aria-hidden />
                     </button>
@@ -132,7 +132,7 @@ export function ImageDropzone({
                     title="Remover"
                     aria-label={`Remover ${image.file.name}`}
                     onClick={() => onRemove(image.id)}
-                    className="rounded-pill bg-black/60 p-1.5 text-white hover:bg-black/80"
+                    className="rounded-input bg-black/60 p-1.5 text-white hover:bg-black/80"
                   >
                     <Trash2 size={13} aria-hidden />
                   </button>

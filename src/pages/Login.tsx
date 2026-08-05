@@ -45,19 +45,21 @@ export function Login() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-bg px-4">
-      <div className="w-full max-w-sm rounded-card bg-surface p-8 shadow-md">
-        <h1 className="mb-6 text-center text-2xl font-extrabold tracking-tight">
-          Prompt Lab <span className="text-text-muted">·</span>{' '}
-          <span className="text-accent">GCO</span>
-        </h1>
+      <div className="w-full max-w-sm rounded-card border border-border bg-surface p-8 shadow-md">
+        <div className="mx-auto mb-6 w-fit rounded-input border-2 border-cabinet-dark bg-surface px-4 py-1.5 font-mono text-sm font-bold uppercase tracking-[0.14em] text-text shadow-[inset_0_0_0_2px_rgba(198,162,84,0.5)]">
+          Prompt Lab
+          <small className="block text-center text-[8.5px] font-normal normal-case tracking-[0.3em] text-text-2">
+            arquivo de fórmulas · GCO
+          </small>
+        </div>
 
-        <div role="tablist" className="mb-6 grid grid-cols-2 gap-1 rounded-pill bg-surface-2 p-1">
+        <div role="tablist" className="mb-6 flex items-end gap-1 border-b-2 border-text">
           <button
             role="tab"
             aria-selected={tab === 'signin'}
             onClick={() => switchTab('signin')}
-            className={`rounded-pill py-1.5 text-sm font-medium transition duration-150 ${
-              tab === 'signin' ? 'bg-surface font-semibold text-text shadow-sm' : 'text-text-2 hover:text-text'
+            className={`flex-1 rounded-tab border border-b-0 border-text/35 py-2 font-mono text-xs font-bold uppercase tracking-[0.06em] transition-all duration-150 ${
+              tab === 'signin' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'bg-surface-2/60 text-text-2 hover:text-text'
             }`}
           >
             Entrar
@@ -66,8 +68,8 @@ export function Login() {
             role="tab"
             aria-selected={tab === 'signup'}
             onClick={() => switchTab('signup')}
-            className={`rounded-pill py-1.5 text-sm font-medium transition duration-150 ${
-              tab === 'signup' ? 'bg-surface font-semibold text-text shadow-sm' : 'text-text-2 hover:text-text'
+            className={`flex-1 rounded-tab border border-b-0 border-text/35 py-2 font-mono text-xs font-bold uppercase tracking-[0.06em] transition-all duration-150 ${
+              tab === 'signup' ? 'border-text bg-surface pb-[9px] pt-[11px] text-text' : 'bg-surface-2/60 text-text-2 hover:text-text'
             }`}
           >
             Criar conta

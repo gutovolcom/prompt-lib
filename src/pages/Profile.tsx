@@ -55,7 +55,7 @@ export function Profile() {
                 aria-label="Trocar avatar"
                 onClick={() => avatarInputRef.current?.click()}
                 disabled={updateProfile.isPending}
-                className="absolute -bottom-1 -right-1 rounded-pill bg-surface p-2 text-text-2 shadow-md transition duration-150 hover:text-text disabled:opacity-50"
+                className="absolute -bottom-1 -right-1 rounded-input bg-surface p-2 text-text-2 shadow-md transition duration-150 hover:text-text disabled:opacity-50"
               >
                 <Camera size={14} aria-hidden />
               </button>
@@ -86,13 +86,13 @@ export function Profile() {
                   if (e.key === 'Escape') setEditingName(false)
                 }}
                 autoFocus
-                className="rounded-pill border border-transparent bg-surface-2 px-4 py-1.5 text-lg font-bold text-text focus:border-accent focus:bg-surface focus:outline-none"
+                className="rounded-input border border-transparent bg-surface-2 px-4 py-1.5 text-lg font-bold text-text focus:border-accent focus:bg-surface focus:outline-none"
               />
               <button
                 type="button"
                 aria-label="Salvar nome"
                 onClick={saveName}
-                className="rounded-pill p-1.5 text-text-2 hover:text-text"
+                className="rounded-input p-1.5 text-text-2 hover:text-text"
               >
                 <Check size={16} aria-hidden />
               </button>
@@ -100,14 +100,14 @@ export function Profile() {
                 type="button"
                 aria-label="Cancelar edição do nome"
                 onClick={() => setEditingName(false)}
-                className="rounded-pill p-1.5 text-text-2 hover:text-text"
+                className="rounded-input p-1.5 text-text-2 hover:text-text"
               >
                 <X size={16} aria-hidden />
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <h1 className="text-3xl font-extrabold tracking-tight">
+              <h1 className="font-display text-3xl font-bold tracking-tight">
                 {profileLoading ? '...' : (profile?.name ?? 'Perfil não encontrado')}
               </h1>
               {isOwn && (
@@ -116,7 +116,7 @@ export function Profile() {
                   title="Editar nome"
                   aria-label="Editar nome"
                   onClick={startEditingName}
-                  className="rounded-pill p-1.5 text-text-2 transition duration-150 hover:text-text"
+                  className="rounded-input p-1.5 text-text-2 transition duration-150 hover:text-text"
                 >
                   <Pencil size={14} aria-hidden />
                 </button>

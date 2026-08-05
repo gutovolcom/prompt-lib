@@ -11,7 +11,7 @@ export function Select({ label, className = '', children, ...props }: SelectProp
     <div className="relative">
       <select
         id={label ? id : undefined}
-        className={`appearance-none rounded-pill border border-border bg-surface py-2 pl-4 pr-9 text-sm text-text transition duration-150 focus:border-accent focus:outline-none ${className}`}
+        className={`appearance-none rounded-input border border-border bg-surface py-2 pl-4 pr-9 text-sm text-text transition duration-150 focus:border-accent focus:outline-none ${className}`}
         {...props}
       >
         {children}
@@ -28,7 +28,7 @@ export function Select({ label, className = '', children, ...props }: SelectProp
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-text">
+      <label htmlFor={id} className="font-mono text-xs font-bold uppercase tracking-[0.06em] text-text-2">
         {label}
       </label>
       {select}

@@ -26,10 +26,10 @@ export function ConfirmDialog({
       role="alertdialog"
       ariaLabel={title}
       overlayClassName="fixed inset-0 z-50 flex items-center justify-center p-4"
-      panelClassName="w-full max-w-sm rounded-card bg-surface p-6 shadow-lg"
+      panelClassName="w-full max-w-sm rounded-card border border-border bg-surface p-6 shadow-lg"
       onBackdropClick={loading ? undefined : onCancel}
     >
-      <h3 className="text-lg font-bold tracking-tight">{title}</h3>
+      <h3 className="font-display text-lg font-bold tracking-tight">{title}</h3>
       <p className="mt-2 text-sm text-text-2">{description}</p>
       <div className="mt-5 flex justify-end gap-2">
         <Button type="button" variant="ghost" disabled={loading} onClick={onCancel}>

@@ -50,7 +50,6 @@ export default {
         card: '7px', // pastas, modais, dropzone
         input: '4px', // inputs, botões, etiquetas
         tab: '7px 7px 0 0', // abas de pasta/fichário
-        pill: '9999px', // legado — some ao fim da migração visual
       },
       boxShadow: {
         sm: 'var(--shadow-sm)',
